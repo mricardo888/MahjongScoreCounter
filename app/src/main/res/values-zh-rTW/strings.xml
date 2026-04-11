@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">麻將計分器</string>
+
+    <!-- Seats -->
+    <string name="seat_east">東</string>
+    <string name="seat_south">南</string>
+    <string name="seat_west">西</string>
+    <string name="seat_north">北</string>
+    <string name="seat_east_short">東</string>
+    <string name="seat_south_short">南</string>
+    <string name="seat_west_short">西</string>
+    <string name="seat_north_short">北</string>
+
+    <!-- Win types -->
+    <string name="win_type_self_draw">自摸</string>
+    <string name="win_type_discard">放槍</string>
+
+    <!-- Main screen labels -->
+    <string name="label_round_winner">本局贏家</string>
+    <string name="label_win_type">胡牌方式</string>
+    <string name="label_fan_count">番數</string>
+    <string name="label_discarder">放槍者</string>
+    <string name="label_required">必填</string>
+    <string name="label_live_session">目前牌局</string>
+
+    <!-- Actions -->
+    <string name="action_commit_round">確認本局</string>
+    <string name="action_undo">還原</string>
+    <string name="action_reset">重設</string>
+    <string name="action_save">儲存</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_increase">增加</string>
+    <string name="action_decrease">減少</string>
+    <string name="action_settings">設定</string>
+
+    <!-- Screen titles -->
+    <string name="title_main">計分板</string>
+    <string name="title_logs">對局紀錄</string>
+    <string name="title_stats">玩家統計</string>
+    <string name="title_settings">設定</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_logs">紀錄</string>
+    <string name="nav_stats">統計</string>
+    <string name="nav_add_round">新增一局</string>
+
+    <!-- Preview / summary -->
+    <string name="preview_empty">選擇贏家以預覽本局。</string>
+    <string name="preview_title_self_draw">%1$d 番自摸</string>
+    <string name="preview_title_discard">%1$d 番放槍</string>
+    <string name="preview_row_pays">%1$s 支付</string>
+    <string name="preview_row_gains">%1$s 得分</string>
+    <string name="preview_subtitle">依目前規則計算</string>
+
+    <!-- Validation errors -->
+    <string name="error_no_winner">請選擇贏家。</string>
+    <string name="error_fan_below_one">番數最少為 1。</string>
+    <string name="error_discarder_required">請選擇放槍者。</string>
+    <string name="error_discarder_forbidden_self_draw">自摸不會有放槍者。</string>
+    <string name="error_winner_is_discarder">贏家與放槍者不能相同。</string>
+    <string name="error_negative_base">底分不能為負數。</string>
+
+    <!-- Logs -->
+    <string name="logs_empty">尚無對局紀錄。</string>
+    <string name="logs_entry_self_draw">%1$s — 自摸 %2$d 番</string>
+    <string name="logs_entry_discard">%1$s 胡 %2$s 放槍 — %3$d 番</string>
+
+    <!-- Stats -->
+    <string name="stats_empty">尚無對局。完成一局後即可查看統計。</string>
+    <string name="stats_total">總分</string>
+    <string name="stats_hands_won">胡牌次數</string>
+    <string name="stats_best_round">最佳一局</string>
+    <string name="stats_worst_round">最差一局</string>
+
+    <!-- Settings -->
+    <string name="settings_rules_header">計分規則</string>
+    <string name="settings_self_draw_base">自摸底分（1 番）</string>
+    <string name="settings_discard_win_base">放槍底分（1 番）</string>
+    <string name="settings_fan_points_table_title">番數分數表</string>
+    <string name="settings_fan_points_column_fan">番</string>
+    <string name="settings_fan_points_column_self_draw">自摸</string>
+    <string name="settings_fan_points_column_discard">放槍</string>
+    <string name="settings_saved">設定已儲存</string>
+
+    <!-- Reset dialog -->
+    <string name="reset_dialog_title">重設對局？</string>
+    <string name="reset_dialog_message">將會清除所有玩家分數及對局紀錄，此操作無法還原。</string>
+    <string name="reset_dialog_confirm">重設</string>
+</resources>
