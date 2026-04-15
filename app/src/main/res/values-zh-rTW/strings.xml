@@ -32,17 +32,20 @@
     <string name="action_increase">增加</string>
     <string name="action_decrease">減少</string>
     <string name="action_settings">設定</string>
+    <string name="action_back">返回</string>
 
     <!-- Screen titles -->
     <string name="title_main">計分板</string>
+    <string name="title_score_table">分數表</string>
     <string name="title_logs">對局紀錄</string>
     <string name="title_stats">玩家統計</string>
     <string name="title_settings">設定</string>
 
     <!-- Bottom nav -->
+    <string name="nav_scoreboard">計分板</string>
+    <string name="nav_score_table">分數表</string>
     <string name="nav_logs">紀錄</string>
     <string name="nav_stats">統計</string>
-    <string name="nav_add_round">新增一局</string>
 
     <!-- Preview / summary -->
     <string name="preview_empty">選擇贏家以預覽本局。</string>
@@ -72,18 +75,113 @@
     <string name="stats_best_round">最佳一局</string>
     <string name="stats_worst_round">最差一局</string>
 
-    <!-- Settings -->
-    <string name="settings_rules_header">計分規則</string>
-    <string name="settings_self_draw_base">自摸底分（1 番）</string>
-    <string name="settings_discard_win_base">放槍底分（1 番）</string>
-    <string name="settings_fan_points_table_title">番數分數表</string>
-    <string name="settings_fan_points_column_fan">番</string>
-    <string name="settings_fan_points_column_self_draw">自摸</string>
-    <string name="settings_fan_points_column_discard">放槍</string>
-    <string name="settings_saved">設定已儲存</string>
+    <!-- Score Table screen -->
+    <string name="score_table_rules_header">計分規則</string>
+    <string name="score_table_discard_win_base">放槍底分（1 番）</string>
+    <string name="score_table_self_draw_base">自摸底分（1 番）</string>
+    <string name="score_table_self_draw_derived">自摸底分（1 番）：%1$d（放槍底分之半）</string>
+    <string name="score_table_custom_self_draw_title">自訂自摸底分</string>
+    <string name="score_table_custom_self_draw_subtitle">獨立設定，而非自動使用放槍底分之半</string>
+    <string name="score_table_fan_points_title">番數分數參考表</string>
+    <string name="score_table_col_fan">番</string>
+    <string name="score_table_col_self_draw">自摸</string>
+    <string name="score_table_col_discard">放槍</string>
+    <string name="score_table_saved">計分規則已儲存</string>
+
+    <!-- Settings screen -->
+    <string name="settings_appearance_header">外觀</string>
+    <string name="settings_theme_label">主題</string>
+    <string name="settings_theme_system">跟隨系統</string>
+    <string name="settings_theme_light">淺色</string>
+    <string name="settings_theme_dark">深色</string>
+    <string name="settings_language_header">語言</string>
+    <string name="settings_language_system">跟隨系統</string>
+    <string name="settings_about_header">關於</string>
+    <string name="settings_about_version">版本 %1$s</string>
 
     <!-- Reset dialog -->
     <string name="reset_dialog_title">重設對局？</string>
     <string name="reset_dialog_message">將會清除所有玩家分數及對局紀錄，此操作無法還原。</string>
     <string name="reset_dialog_confirm">重設</string>
+
+    <!-- Validation errors (new variants) -->
+    <string name="error_tai_below_one">台數最少為 1。</string>
+    <string name="error_tai_below_min">台數未達最低要求。</string>
+    <string name="error_han_below_one">番數最少為 1。</string>
+    <string name="error_fu_below_min">符數最少為 20。</string>
+    <string name="error_fu_invalid">符數無效。</string>
+    <string name="error_input_type_mismatch">輸入類型與計分規則不符。</string>
+    <string name="error_negative_count">數量不能為負數。</string>
+
+    <!-- Game Variants -->
+    <string name="variant_hong_kong_new">香港新章</string>
+    <string name="variant_taiwanese">台灣十六張</string>
+    <string name="variant_japanese_riichi">日本立直</string>
+    <string name="variant_hokkien">閩南/福建</string>
+    <string name="variant_shanghai">上海</string>
+    <string name="variant_sichuan">四川血戰</string>
+    <string name="variant_singaporean">新加坡</string>
+
+    <!-- Settings – Variant section -->
+    <string name="settings_variant_header">遊戲玩法</string>
+    <string name="settings_variant_change_title">更改玩法？</string>
+    <string name="settings_variant_change_message">更改玩法將清除所有對局紀錄，確定繼續？</string>
+    <string name="settings_variant_change_confirm">更改</string>
+
+    <!-- Labels (new variants) -->
+    <string name="label_tai_count">台數</string>
+    <string name="label_han">番數</string>
+    <string name="label_fu">符數</string>
+    <string name="label_honba">本場</string>
+    <string name="label_riichi_sticks">場上立直棒</string>
+    <string name="label_flower_count">花牌數</string>
+    <string name="label_animal_count">動物牌數</string>
+    <string name="label_dealer">莊家</string>
+
+    <!-- Preview titles (new variants) -->
+    <string name="preview_title_self_draw_tai">%1$d 台自摸</string>
+    <string name="preview_title_discard_tai">%1$d 台放槍</string>
+    <string name="preview_title_riichi_tsumo">%1$d 番 %2$d 符自摸</string>
+    <string name="preview_title_riichi_ron">%1$d 番 %2$d 符榮和</string>
+    <string name="preview_stick_bonus">+%1$d 附加（立直棒）</string>
+
+    <!-- Logs (new variants) -->
+    <string name="logs_entry_self_draw_tai">%1$s — 自摸 %2$d 台</string>
+    <string name="logs_entry_discard_tai">%1$s 胡 %2$s 放槍 — %3$d 台</string>
+    <string name="logs_entry_self_draw_riichi">%1$s — 自摸 %2$d 番 %3$d 符</string>
+    <string name="logs_entry_discard_riichi">%1$s 榮和 %2$s — %3$d 番 %4$d 符</string>
+
+    <!-- Score Table – rules editor labels -->
+    <string name="rules_hk_discard_base">放槍底分（1 番）</string>
+    <string name="rules_hk_self_draw_base">自摸底分（1 番）</string>
+    <string name="rules_hk_max_fan">番數上限（0 = 無限制）</string>
+    <string name="rules_hk_custom_self_draw_title">自訂自摸底分</string>
+    <string name="rules_hk_custom_self_draw_subtitle">獨立設定，而非自動使用放槍底分之半</string>
+    <string name="rules_hk_self_draw_derived">自摸底分：%1$d（放槍底分之半）</string>
+    <string name="rules_tw_base">底分</string>
+    <string name="rules_tw_per_tai">每台加分</string>
+    <string name="rules_tw_min_tai">最低台數</string>
+    <string name="rules_tw_self_draw_bonus_tai">自摸加台</string>
+    <string name="rules_tw_dealer_multiplier">莊家倍數</string>
+    <string name="rules_hok_base">底分</string>
+    <string name="rules_hok_per_unit">每台加分</string>
+    <string name="rules_hok_max_units">台數上限（0 = 無限制）</string>
+    <string name="rules_hok_dealer_doubles">莊家雙倍</string>
+    <string name="rules_ri_kiriage_mangan">切上滿貫</string>
+    <string name="rules_ri_honba_value">本場點數（每本）</string>
+    <string name="rules_ri_stick_value">立直棒點數</string>
+    <string name="rules_sh_base">底分（1 番）</string>
+    <string name="rules_sh_max_fan">番數上限</string>
+    <string name="rules_sg_flower_bonus">花牌加分（每張）</string>
+    <string name="rules_sg_animal_bonus">動物牌加分（每隻）</string>
+
+    <!-- Score Table – column headers -->
+    <string name="score_table_col_tai">台</string>
+    <string name="score_table_col_payout">賠分</string>
+    <string name="score_table_col_han">番</string>
+    <string name="score_table_col_non_dealer_ron">閒家榮和</string>
+    <string name="score_table_col_dealer_ron">莊家榮和</string>
+    <string name="score_table_riichi_reference">立直點數等級</string>
+    <string name="score_table_col_non_dealer_tsumo">閒家自摸</string>
+    <string name="score_table_col_dealer_tsumo">莊家自摸</string>
 </resources>

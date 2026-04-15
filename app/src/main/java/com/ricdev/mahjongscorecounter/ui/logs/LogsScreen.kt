@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ricdev.mahjongscorecounter.R
 import com.ricdev.mahjongscorecounter.model.CommittedRound
+import com.ricdev.mahjongscorecounter.model.RoundInput
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.WinType
 import com.ricdev.mahjongscorecounter.ui.main.labelResId
@@ -99,18 +100,35 @@ private fun LogEntry(round: CommittedRound) {
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            val title = when (round.input.winType) {
-                WinType.SELF_DRAW -> stringResource(
-                    R.string.logs_entry_self_draw,
-                    stringResource(round.input.winner.labelResId()),
-                    round.input.fanCount,
-                )
-                WinType.DISCARD_WIN -> stringResource(
-                    R.string.logs_entry_discard,
-                    stringResource(round.input.winner.labelResId()),
-                    stringResource((round.input.discarder ?: round.input.winner).labelResId()),
-                    round.input.fanCount,
-                )
+            val winnerLabel = stringResource(round.input.winner.labelResId())
+            val discarderLabel = stringResource(
+                (round.input.discarder ?: round.input.winner).labelResId()
+            )
+            val title = when (val input = round.input) {
+                is RoundInput.Fan -> when (input.winType) {
+                    WinType.SELF_DRAW -> stringResource(
+                        R.string.logs_entry_self_draw, winnerLabel, input.fanCount,
+                    )
+                    WinType.DISCARD_WIN -> stringResource(
+                        R.string.logs_entry_discard, winnerLabel, discarderLabel, input.fanCount,
+                    )
+                }
+                is RoundInput.Tai -> when (input.winType) {
+                    WinType.SELF_DRAW -> stringResource(
+                        R.string.logs_entry_self_draw_tai, winnerLabel, input.taiCount,
+                    )
+                    WinType.DISCARD_WIN -> stringResource(
+                        R.string.logs_entry_discard_tai, winnerLabel, discarderLabel, input.taiCount,
+                    )
+                }
+                is RoundInput.Riichi -> when (input.winType) {
+                    WinType.SELF_DRAW -> stringResource(
+                        R.string.logs_entry_self_draw_riichi, winnerLabel, input.han, input.fu,
+                    )
+                    WinType.DISCARD_WIN -> stringResource(
+                        R.string.logs_entry_discard_riichi, winnerLabel, discarderLabel, input.han, input.fu,
+                    )
+                }
             }
             Text(
                 text = title,

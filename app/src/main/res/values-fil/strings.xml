@@ -1,0 +1,187 @@
+<resources>
+    <string name="app_name">Tagasubaybay ng Iskor sa Mahjong</string>
+
+    <!-- Seats -->
+    <string name="seat_east">Silangan</string>
+    <string name="seat_south">Timog</string>
+    <string name="seat_west">Kanluran</string>
+    <string name="seat_north">Hilaga</string>
+    <string name="seat_east_short">S</string>
+    <string name="seat_south_short">T</string>
+    <string name="seat_west_short">K</string>
+    <string name="seat_north_short">H</string>
+
+    <!-- Win types -->
+    <string name="win_type_self_draw">Self Draw</string>
+    <string name="win_type_discard">Mula sa tapon</string>
+
+    <!-- Main screen labels -->
+    <string name="label_round_winner">Nanalo sa round</string>
+    <string name="label_win_type">Uri ng panalo</string>
+    <string name="label_fan_count">Bilang ng fan</string>
+    <string name="label_discarder">Nagtapon</string>
+    <string name="label_required">Kailangan</string>
+    <string name="label_live_session">Kasalukuyang laro</string>
+
+    <!-- Actions -->
+    <string name="action_commit_round">I-save ang round</string>
+    <string name="action_undo">I-undo</string>
+    <string name="action_reset">I-reset</string>
+    <string name="action_save">I-save</string>
+    <string name="action_cancel">Kanselahin</string>
+    <string name="action_increase">Dagdagan</string>
+    <string name="action_decrease">Bawasan</string>
+    <string name="action_settings">Mga setting</string>
+    <string name="action_back">Bumalik</string>
+
+    <!-- Screen titles -->
+    <string name="title_main">Scoreboard</string>
+    <string name="title_score_table">Talahanayan ng puntos</string>
+    <string name="title_logs">Mga log ng round</string>
+    <string name="title_stats">Stats ng manlalaro</string>
+    <string name="title_settings">Mga setting</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_scoreboard">Scoreboard</string>
+    <string name="nav_score_table">Talahanayan</string>
+    <string name="nav_logs">Mga log</string>
+    <string name="nav_stats">Stats</string>
+
+    <!-- Preview / summary -->
+    <string name="preview_empty">Pumili ng nanalo para makita ang preview ng round.</string>
+    <string name="preview_title_self_draw">%1$d-fan Self Draw</string>
+    <string name="preview_title_discard">%1$d-fan Panalo sa tapon</string>
+    <string name="preview_row_pays">%1$s ang magbabayad</string>
+    <string name="preview_row_gains">%1$s ang makakakuha</string>
+    <string name="preview_subtitle">Kinuwenta ayon sa kasalukuyang rules</string>
+
+    <!-- Validation errors -->
+    <string name="error_no_winner">Pumili ng nanalo.</string>
+    <string name="error_fan_below_one">Ang fan count ay dapat hindi bababa sa 1.</string>
+    <string name="error_discarder_required">Pumili ng nagtapon.</string>
+    <string name="error_discarder_forbidden_self_draw">Walang discarder ang Self Draw.</string>
+    <string name="error_winner_is_discarder">Magkaiba dapat ang nanalo at nagtapon.</string>
+    <string name="error_negative_base">Hindi puwedeng negatibo ang base amounts.</string>
+
+    <!-- Logs -->
+    <string name="logs_empty">Wala pang naitalang round.</string>
+    <string name="logs_entry_self_draw">%1$s — Self Draw, %2$d fan</string>
+    <string name="logs_entry_discard">%1$s laban kay %2$s — %3$d fan</string>
+
+    <!-- Stats -->
+    <string name="stats_empty">Wala pang round. Mag-save ng round para makita ang stats.</string>
+    <string name="stats_total">Kabuuan</string>
+    <string name="stats_hands_won">Mga panalong kamay</string>
+    <string name="stats_best_round">Pinakamagandang round</string>
+    <string name="stats_worst_round">Pinakamahinang round</string>
+
+    <!-- Score Table screen -->
+    <string name="score_table_rules_header">Mga tuntunin sa puntos</string>
+    <string name="score_table_discard_win_base">Base ng panalo sa tapon (1 fan)</string>
+    <string name="score_table_self_draw_base">Base ng Self Draw (1 fan)</string>
+    <string name="score_table_self_draw_derived">Base ng Self Draw (1 fan): %1$d (kalahati ng panalo sa tapon)</string>
+    <string name="score_table_custom_self_draw_title">Custom na base ng Self Draw</string>
+    <string name="score_table_custom_self_draw_subtitle">Itakda nang hiwalay sa halip na awtomatikong kalahati ng panalo sa tapon</string>
+    <string name="score_table_fan_points_title">Sanggunian ng fan points</string>
+    <string name="score_table_col_fan">Fan</string>
+    <string name="score_table_col_self_draw">Self Draw</string>
+    <string name="score_table_col_discard">Sa tapon</string>
+    <string name="score_table_saved">Na-save ang scoring rules</string>
+
+    <!-- Settings screen -->
+    <string name="settings_appearance_header">Hitsura</string>
+    <string name="settings_theme_label">Tema</string>
+    <string name="settings_theme_system">Default ng system</string>
+    <string name="settings_theme_light">Maliwanag</string>
+    <string name="settings_theme_dark">Madilim</string>
+    <string name="settings_language_header">Wika</string>
+    <string name="settings_language_system">Default ng system</string>
+    <string name="settings_about_header">Tungkol sa app</string>
+    <string name="settings_about_version">Bersyon %1$s</string>
+
+    <!-- Reset dialog -->
+    <string name="reset_dialog_title">I-reset ang laro?</string>
+    <string name="reset_dialog_message">Buburahin nito ang lahat ng kabuuang puntos ng mga manlalaro at history ng round. Hindi na ito maibabalik.</string>
+    <string name="reset_dialog_confirm">I-reset</string>
+
+    <!-- Validation errors (new variants) -->
+    <string name="error_tai_below_one">Ang tai count ay dapat hindi bababa sa 1.</string>
+    <string name="error_tai_below_min">Mas mababa ang tai count sa kinakailangang minimum.</string>
+    <string name="error_han_below_one">Ang han ay dapat hindi bababa sa 1.</string>
+    <string name="error_fu_below_min">Ang fu ay dapat hindi bababa sa 20.</string>
+    <string name="error_fu_invalid">Hindi wastong fu value.</string>
+    <string name="error_input_type_mismatch">Hindi tugma ang input type sa scoring rules.</string>
+    <string name="error_negative_count">Hindi puwedeng negatibo ang bilang.</string>
+
+    <!-- Game Variants -->
+    <string name="variant_hong_kong_new">Hong Kong New Style</string>
+    <string name="variant_taiwanese">Taiwanese 16-Tile</string>
+    <string name="variant_japanese_riichi">Japanese Riichi</string>
+    <string name="variant_hokkien">Hokkien/Fujian</string>
+    <string name="variant_shanghai">Shanghai</string>
+    <string name="variant_sichuan">Sichuan</string>
+    <string name="variant_singaporean">Singaporean</string>
+
+    <!-- Settings – Variant section -->
+    <string name="settings_variant_header">Variant ng laro</string>
+    <string name="settings_variant_change_title">Palitan ang variant?</string>
+    <string name="settings_variant_change_message">Kapag pinalitan ang variant, mabubura ang buong history ng round. Itutuloy?</string>
+    <string name="settings_variant_change_confirm">Palitan</string>
+
+    <!-- Labels (new variants) -->
+    <string name="label_tai_count">Bilang ng tai</string>
+    <string name="label_han">Han</string>
+    <string name="label_fu">Fu</string>
+    <string name="label_honba">Honba</string>
+    <string name="label_riichi_sticks">Mga riichi stick sa mesa</string>
+    <string name="label_flower_count">Mga flower tile</string>
+    <string name="label_animal_count">Mga animal tile</string>
+    <string name="label_dealer">Dealer</string>
+
+    <!-- Preview titles (new variants) -->
+    <string name="preview_title_self_draw_tai">%1$d-tai Self Draw</string>
+    <string name="preview_title_discard_tai">%1$d-tai Panalo sa tapon</string>
+    <string name="preview_title_riichi_tsumo">%1$d han %2$d fu Tsumo</string>
+    <string name="preview_title_riichi_ron">%1$d han %2$d fu Ron</string>
+    <string name="preview_stick_bonus">+%1$d bonus (riichi sticks)</string>
+
+    <!-- Logs (new variants) -->
+    <string name="logs_entry_self_draw_tai">%1$s — Self Draw, %2$d tai</string>
+    <string name="logs_entry_discard_tai">%1$s laban kay %2$s — %3$d tai</string>
+    <string name="logs_entry_self_draw_riichi">%1$s — Tsumo, %2$d han %3$d fu</string>
+    <string name="logs_entry_discard_riichi">%1$s laban kay %2$s — %3$d han %4$d fu</string>
+
+    <!-- Score Table – rules editor labels -->
+    <string name="rules_hk_discard_base">Base ng panalo sa tapon (1 fan)</string>
+    <string name="rules_hk_self_draw_base">Base ng Self Draw (1 fan)</string>
+    <string name="rules_hk_max_fan">Max fan (0 = walang limit)</string>
+    <string name="rules_hk_custom_self_draw_title">Custom na base ng Self Draw</string>
+    <string name="rules_hk_custom_self_draw_subtitle">Itakda nang hiwalay sa halip na awtomatikong kalahati ng panalo sa tapon</string>
+    <string name="rules_hk_self_draw_derived">Base ng Self Draw: %1$d (kalahati ng panalo sa tapon)</string>
+    <string name="rules_tw_base">Base payout</string>
+    <string name="rules_tw_per_tai">Payout bawat tai</string>
+    <string name="rules_tw_min_tai">Minimum na tai</string>
+    <string name="rules_tw_self_draw_bonus_tai">Bonus tai sa Self Draw</string>
+    <string name="rules_tw_dealer_multiplier">Multiplier ng dealer</string>
+    <string name="rules_hok_base">Base payout</string>
+    <string name="rules_hok_per_unit">Payout bawat unit</string>
+    <string name="rules_hok_max_units">Max units (0 = walang limit)</string>
+    <string name="rules_hok_dealer_doubles">Dobleng payout ang dealer</string>
+    <string name="rules_ri_kiriage_mangan">Kiriage Mangan</string>
+    <string name="rules_ri_honba_value">Halaga ng honba (puntos bawat counter)</string>
+    <string name="rules_ri_stick_value">Halaga ng riichi stick (puntos)</string>
+    <string name="rules_sh_base">Base (1 fan)</string>
+    <string name="rules_sh_max_fan">Max fan</string>
+    <string name="rules_sg_flower_bonus">Bonus sa flower tile (bawat tile)</string>
+    <string name="rules_sg_animal_bonus">Bonus sa animal tile (bawat tile)</string>
+
+    <!-- Score Table – column headers -->
+    <string name="score_table_col_tai">Tai</string>
+    <string name="score_table_col_payout">Payout</string>
+    <string name="score_table_col_han">Han</string>
+    <string name="score_table_col_non_dealer_ron">Ron ng non-dealer</string>
+    <string name="score_table_col_dealer_ron">Ron ng dealer</string>
+    <string name="score_table_riichi_reference">Antas ng puntos ng Riichi</string>
+    <string name="score_table_col_non_dealer_tsumo">Tsumo ng non-dealer</string>
+    <string name="score_table_col_dealer_tsumo">Tsumo ng dealer</string>
+</resources>

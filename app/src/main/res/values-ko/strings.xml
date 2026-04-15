@@ -1,0 +1,187 @@
+<resources>
+    <string name="app_name">마작 점수 기록기</string>
+
+    <!-- Seats -->
+    <string name="seat_east">동</string>
+    <string name="seat_south">남</string>
+    <string name="seat_west">서</string>
+    <string name="seat_north">북</string>
+    <string name="seat_east_short">동</string>
+    <string name="seat_south_short">남</string>
+    <string name="seat_west_short">서</string>
+    <string name="seat_north_short">북</string>
+
+    <!-- Win types -->
+    <string name="win_type_self_draw">쯔모</string>
+    <string name="win_type_discard">론</string>
+
+    <!-- Main screen labels -->
+    <string name="label_round_winner">국 승자</string>
+    <string name="label_win_type">화료 방식</string>
+    <string name="label_fan_count">판 수</string>
+    <string name="label_discarder">방총자</string>
+    <string name="label_required">필수</string>
+    <string name="label_live_session">진행 중인 게임</string>
+
+    <!-- Actions -->
+    <string name="action_commit_round">국 기록</string>
+    <string name="action_undo">실행 취소</string>
+    <string name="action_reset">초기화</string>
+    <string name="action_save">저장</string>
+    <string name="action_cancel">취소</string>
+    <string name="action_increase">증가</string>
+    <string name="action_decrease">감소</string>
+    <string name="action_settings">설정</string>
+    <string name="action_back">뒤로</string>
+
+    <!-- Screen titles -->
+    <string name="title_main">점수판</string>
+    <string name="title_score_table">점수표</string>
+    <string name="title_logs">국 기록</string>
+    <string name="title_stats">플레이어 통계</string>
+    <string name="title_settings">설정</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_scoreboard">점수판</string>
+    <string name="nav_score_table">점수표</string>
+    <string name="nav_logs">기록</string>
+    <string name="nav_stats">통계</string>
+
+    <!-- Preview / summary -->
+    <string name="preview_empty">승자를 선택해 국 미리보기를 확인하세요.</string>
+    <string name="preview_title_self_draw">%1$d판 쯔모</string>
+    <string name="preview_title_discard">%1$d판 론</string>
+    <string name="preview_row_pays">%1$s 지불</string>
+    <string name="preview_row_gains">%1$s 획득</string>
+    <string name="preview_subtitle">현재 규칙 기준 계산</string>
+
+    <!-- Validation errors -->
+    <string name="error_no_winner">승자를 선택하세요.</string>
+    <string name="error_fan_below_one">판 수는 최소 1이어야 합니다.</string>
+    <string name="error_discarder_required">방총자를 선택하세요.</string>
+    <string name="error_discarder_forbidden_self_draw">쯔모에는 방총자가 없습니다.</string>
+    <string name="error_winner_is_discarder">승자와 방총자는 달라야 합니다.</string>
+    <string name="error_negative_base">기본 점수는 음수일 수 없습니다.</string>
+
+    <!-- Logs -->
+    <string name="logs_empty">아직 기록된 국이 없습니다.</string>
+    <string name="logs_entry_self_draw">%1$s — 쯔모, %2$d판</string>
+    <string name="logs_entry_discard">%1$s가 %2$s에게 론 — %3$d판</string>
+
+    <!-- Stats -->
+    <string name="stats_empty">아직 국이 없습니다. 국을 기록하면 통계를 볼 수 있습니다.</string>
+    <string name="stats_total">합계</string>
+    <string name="stats_hands_won">화료 횟수</string>
+    <string name="stats_best_round">최고 국</string>
+    <string name="stats_worst_round">최저 국</string>
+
+    <!-- Score Table screen -->
+    <string name="score_table_rules_header">점수 규칙</string>
+    <string name="score_table_discard_win_base">론 기본점(1판)</string>
+    <string name="score_table_self_draw_base">쯔모 기본점(1판)</string>
+    <string name="score_table_self_draw_derived">쯔모 기본점(1판): %1$d (론의 절반)</string>
+    <string name="score_table_custom_self_draw_title">쯔모 기본점 직접 설정</string>
+    <string name="score_table_custom_self_draw_subtitle">론 기본점의 절반을 자동 적용하지 않고 별도로 설정합니다</string>
+    <string name="score_table_fan_points_title">판별 점수표</string>
+    <string name="score_table_col_fan">판</string>
+    <string name="score_table_col_self_draw">쯔모</string>
+    <string name="score_table_col_discard">론</string>
+    <string name="score_table_saved">점수 규칙이 저장되었습니다</string>
+
+    <!-- Settings screen -->
+    <string name="settings_appearance_header">표시</string>
+    <string name="settings_theme_label">테마</string>
+    <string name="settings_theme_system">시스템 기본값</string>
+    <string name="settings_theme_light">라이트</string>
+    <string name="settings_theme_dark">다크</string>
+    <string name="settings_language_header">언어</string>
+    <string name="settings_language_system">시스템 기본값</string>
+    <string name="settings_about_header">정보</string>
+    <string name="settings_about_version">버전 %1$s</string>
+
+    <!-- Reset dialog -->
+    <string name="reset_dialog_title">게임을 초기화할까요?</string>
+    <string name="reset_dialog_message">모든 플레이어 점수와 국 기록이 삭제됩니다. 이 작업은 되돌릴 수 없습니다.</string>
+    <string name="reset_dialog_confirm">초기화</string>
+
+    <!-- Validation errors (new variants) -->
+    <string name="error_tai_below_one">타이 수는 최소 1이어야 합니다.</string>
+    <string name="error_tai_below_min">타이 수가 최소 요구치보다 낮습니다.</string>
+    <string name="error_han_below_one">한은 최소 1이어야 합니다.</string>
+    <string name="error_fu_below_min">후는 최소 20이어야 합니다.</string>
+    <string name="error_fu_invalid">유효하지 않은 후 값입니다.</string>
+    <string name="error_input_type_mismatch">입력 유형이 점수 규칙과 맞지 않습니다.</string>
+    <string name="error_negative_count">수량은 음수일 수 없습니다.</string>
+
+    <!-- Game Variants -->
+    <string name="variant_hong_kong_new">홍콩 신식</string>
+    <string name="variant_taiwanese">대만 16장</string>
+    <string name="variant_japanese_riichi">일본 리치</string>
+    <string name="variant_hokkien">호키엔/푸젠</string>
+    <string name="variant_shanghai">상하이</string>
+    <string name="variant_sichuan">사천</string>
+    <string name="variant_singaporean">싱가포르</string>
+
+    <!-- Settings – Variant section -->
+    <string name="settings_variant_header">게임 방식</string>
+    <string name="settings_variant_change_title">방식을 변경할까요?</string>
+    <string name="settings_variant_change_message">방식을 변경하면 모든 국 기록이 삭제됩니다. 계속할까요?</string>
+    <string name="settings_variant_change_confirm">변경</string>
+
+    <!-- Labels (new variants) -->
+    <string name="label_tai_count">타이 수</string>
+    <string name="label_han">한</string>
+    <string name="label_fu">후</string>
+    <string name="label_honba">혼바</string>
+    <string name="label_riichi_sticks">탁 위 리치봉</string>
+    <string name="label_flower_count">화패 수</string>
+    <string name="label_animal_count">동물패 수</string>
+    <string name="label_dealer">친</string>
+
+    <!-- Preview titles (new variants) -->
+    <string name="preview_title_self_draw_tai">%1$d타이 쯔모</string>
+    <string name="preview_title_discard_tai">%1$d타이 론</string>
+    <string name="preview_title_riichi_tsumo">%1$d한 %2$d후 쯔모</string>
+    <string name="preview_title_riichi_ron">%1$d한 %2$d후 론</string>
+    <string name="preview_stick_bonus">+%1$d 보너스(리치봉)</string>
+
+    <!-- Logs (new variants) -->
+    <string name="logs_entry_self_draw_tai">%1$s — 쯔모, %2$d타이</string>
+    <string name="logs_entry_discard_tai">%1$s가 %2$s에게 론 — %3$d타이</string>
+    <string name="logs_entry_self_draw_riichi">%1$s — 쯔모, %2$d한 %3$d후</string>
+    <string name="logs_entry_discard_riichi">%1$s가 %2$s에게 론 — %3$d한 %4$d후</string>
+
+    <!-- Score Table – rules editor labels -->
+    <string name="rules_hk_discard_base">론 기본점(1판)</string>
+    <string name="rules_hk_self_draw_base">쯔모 기본점(1판)</string>
+    <string name="rules_hk_max_fan">최대 판 수(0 = 무제한)</string>
+    <string name="rules_hk_custom_self_draw_title">쯔모 기본점 직접 설정</string>
+    <string name="rules_hk_custom_self_draw_subtitle">론 기본점의 절반을 자동 적용하지 않고 별도로 설정합니다</string>
+    <string name="rules_hk_self_draw_derived">쯔모 기본점: %1$d (론의 절반)</string>
+    <string name="rules_tw_base">기본 지급점</string>
+    <string name="rules_tw_per_tai">타이당 지급점</string>
+    <string name="rules_tw_min_tai">최소 타이</string>
+    <string name="rules_tw_self_draw_bonus_tai">쯔모 보너스 타이</string>
+    <string name="rules_tw_dealer_multiplier">친 배수</string>
+    <string name="rules_hok_base">기본 지급점</string>
+    <string name="rules_hok_per_unit">단위당 지급점</string>
+    <string name="rules_hok_max_units">최대 단위(0 = 무제한)</string>
+    <string name="rules_hok_dealer_doubles">친 두 배 지급</string>
+    <string name="rules_ri_kiriage_mangan">키리아게 만관</string>
+    <string name="rules_ri_honba_value">혼바 값(카운터당 점수)</string>
+    <string name="rules_ri_stick_value">리치봉 값(점수)</string>
+    <string name="rules_sh_base">기본점(1판)</string>
+    <string name="rules_sh_max_fan">최대 판 수</string>
+    <string name="rules_sg_flower_bonus">화패 보너스(패당)</string>
+    <string name="rules_sg_animal_bonus">동물패 보너스(패당)</string>
+
+    <!-- Score Table – column headers -->
+    <string name="score_table_col_tai">타이</string>
+    <string name="score_table_col_payout">지급점</string>
+    <string name="score_table_col_han">한</string>
+    <string name="score_table_col_non_dealer_ron">비친 론</string>
+    <string name="score_table_col_dealer_ron">친 론</string>
+    <string name="score_table_riichi_reference">리치 점수 구간</string>
+    <string name="score_table_col_non_dealer_tsumo">비친 쯔모</string>
+    <string name="score_table_col_dealer_tsumo">친 쯔모</string>
+</resources>

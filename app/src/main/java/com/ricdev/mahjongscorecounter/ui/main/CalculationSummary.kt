@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ricdev.mahjongscorecounter.R
+import com.ricdev.mahjongscorecounter.model.RoundInput
 import com.ricdev.mahjongscorecounter.model.RoundResult
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.ValidationError
@@ -34,7 +35,7 @@ fun CalculationSummary(
     when (state) {
         PreviewState.Empty -> EmptyPrompt(modifier)
         is PreviewState.Invalid -> ErrorCard(state.error, modifier)
-        is PreviewState.Valid -> ValidPreview(state.result, modifier)
+        is PreviewState.Valid -> ValidPreview(state.input, state.result, modifier)
     }
 }
 
@@ -68,15 +69,25 @@ private fun ErrorCard(error: ValidationError, modifier: Modifier) {
 }
 
 @Composable
-private fun ValidPreview(result: RoundResult, modifier: Modifier) {
+private fun ValidPreview(input: RoundInput, result: RoundResult, modifier: Modifier) {
     ElevatedCard(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            val title = when (result.winType) {
-                WinType.SELF_DRAW -> stringResource(R.string.preview_title_self_draw, result.fanCount)
-                WinType.DISCARD_WIN -> stringResource(R.string.preview_title_discard, result.fanCount)
+            val title = when (input) {
+                is RoundInput.Fan -> when (input.winType) {
+                    WinType.SELF_DRAW -> stringResource(R.string.preview_title_self_draw, input.fanCount)
+                    WinType.DISCARD_WIN -> stringResource(R.string.preview_title_discard, input.fanCount)
+                }
+                is RoundInput.Tai -> when (input.winType) {
+                    WinType.SELF_DRAW -> stringResource(R.string.preview_title_self_draw_tai, input.taiCount)
+                    WinType.DISCARD_WIN -> stringResource(R.string.preview_title_discard_tai, input.taiCount)
+                }
+                is RoundInput.Riichi -> when (input.winType) {
+                    WinType.SELF_DRAW -> stringResource(R.string.preview_title_riichi_tsumo, input.han, input.fu)
+                    WinType.DISCARD_WIN -> stringResource(R.string.preview_title_riichi_ron, input.han, input.fu)
+                }
             }
             Text(
                 text = title,
@@ -92,6 +103,13 @@ private fun ValidPreview(result: RoundResult, modifier: Modifier) {
                 val delta = result.deltas[seat] ?: 0
                 if (delta == 0) return@forEach
                 DeltaRow(seat = seat, delta = delta)
+            }
+            if (result.stickBonus != 0) {
+                Text(
+                    text = stringResource(R.string.preview_stick_bonus, result.stickBonus),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = DeltaPositive,
+                )
             }
         }
     }
@@ -135,6 +153,13 @@ internal fun ValidationError.toResId(): Int = when (this) {
     ValidationError.DiscarderForbiddenForSelfDraw -> R.string.error_discarder_forbidden_self_draw
     ValidationError.WinnerIsDiscarder -> R.string.error_winner_is_discarder
     ValidationError.NegativeBase -> R.string.error_negative_base
+    ValidationError.TaiBelowOne -> R.string.error_tai_below_one
+    ValidationError.TaiBelowMin -> R.string.error_tai_below_min
+    ValidationError.HanBelowOne -> R.string.error_han_below_one
+    ValidationError.FuBelowMin -> R.string.error_fu_below_min
+    ValidationError.FuInvalid -> R.string.error_fu_invalid
+    ValidationError.InputTypeMismatch -> R.string.error_input_type_mismatch
+    ValidationError.NegativeCount -> R.string.error_negative_count
 }
 
 @Preview(showBackground = true, widthDp = 360)
@@ -161,18 +186,20 @@ private fun CalculationSummaryValidPreview() {
     MahjongScoreCounterTheme {
         CalculationSummary(
             state = PreviewState.Valid(
-                RoundResult(
+                input = RoundInput.Fan(
+                    winner = Seat.EAST,
+                    winType = WinType.SELF_DRAW,
+                    fanCount = 3,
+                ),
+                result = RoundResult(
                     deltas = mapOf(
-                        Seat.EAST to 48,
-                        Seat.SOUTH to -16,
-                        Seat.WEST to -16,
-                        Seat.NORTH to -16,
+                        Seat.EAST to 9,
+                        Seat.SOUTH to -3,
+                        Seat.WEST to -3,
+                        Seat.NORTH to -3,
                     ),
                     winner = Seat.EAST,
                     winType = WinType.SELF_DRAW,
-                    fanCount = 2,
-                    perLoserAmount = 16,
-                    totalAmount = 48,
                 ),
             ),
         )

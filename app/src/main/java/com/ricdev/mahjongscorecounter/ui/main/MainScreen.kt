@@ -59,9 +59,15 @@ fun MainScreen(
 
         RoundEntryForm(
             form = form,
+            rules = gameState.rules,
             onWinnerSelected = viewModel::selectWinner,
             onWinTypeSelected = viewModel::selectWinType,
             onFanChange = viewModel::setFan,
+            onFlowerChange = viewModel::setFlowerCount,
+            onAnimalChange = viewModel::setAnimalCount,
+            onTaiChange = viewModel::setTai,
+            onHanChange = viewModel::setHan,
+            onFuChange = viewModel::setFu,
             onDiscarderSelected = viewModel::selectDiscarder,
         )
 

@@ -1,5 +1,6 @@
 package com.ricdev.mahjongscorecounter.logic
 
+import com.ricdev.mahjongscorecounter.logic.variants.RiichiEngine
 import com.ricdev.mahjongscorecounter.model.CommittedRound
 import com.ricdev.mahjongscorecounter.model.RoundInput
 import com.ricdev.mahjongscorecounter.model.ScoreRules
@@ -14,209 +15,371 @@ import org.junit.Test
 
 class ScoreEngineTest {
 
-    private val defaultRules = ScoreRules()
+    // ---------- Hong Kong New Style ----------
+
+    private val hkDefaults = ScoreRules.HongKongNew()
 
     @Test
-    fun `default rules use half-value self draw base`() {
-        assertEquals(4, defaultRules.selfDrawBase)
-        assertEquals(8, defaultRules.discardWinBase)
+    fun `hk new defaults to discardBase=2 selfDrawBase=1 no cap`() {
+        assertEquals(2, hkDefaults.discardBase)
+        assertEquals(1, hkDefaults.selfDrawBase)
+        assertNull(hkDefaults.maxFan)
     }
 
-    // ---------- amountForFan ----------
-
     @Test
-    fun `amountForFan doubles each fan`() {
-        assertEquals(8, ScoreEngine.amountForFan(8, 1))
-        assertEquals(16, ScoreEngine.amountForFan(8, 2))
-        assertEquals(32, ScoreEngine.amountForFan(8, 3))
-        assertEquals(512, ScoreEngine.amountForFan(8, 7))
+    fun `hk new self draw 3-fan linear`() {
+        val input = RoundInput.Fan(Seat.EAST, WinType.SELF_DRAW, fanCount = 3)
+        val result = ScoreEngine.calculate(input, hkDefaults)
+        // perLoser = 1 * 3 = 3, winner = 9
+        assertEquals(9, result.deltas[Seat.EAST])
+        assertEquals(-3, result.deltas[Seat.SOUTH])
+        assertEquals(-3, result.deltas[Seat.WEST])
+        assertEquals(-3, result.deltas[Seat.NORTH])
     }
 
-    // ---------- calculate: Self Draw ----------
-
     @Test
-    fun `self draw 7-fan east winner pays 256 each`() {
-        val input = RoundInput(
-            winner = Seat.EAST,
-            winType = WinType.SELF_DRAW,
-            fanCount = 7,
-        )
-        val result = ScoreEngine.calculate(input, defaultRules)
-        assertEquals(768, result.deltas[Seat.EAST])
-        assertEquals(-256, result.deltas[Seat.SOUTH])
-        assertEquals(-256, result.deltas[Seat.WEST])
-        assertEquals(-256, result.deltas[Seat.NORTH])
-        assertEquals(256, result.perLoserAmount)
-        assertEquals(768, result.totalAmount)
-    }
-
-    // ---------- calculate: Discard Win ----------
-
-    @Test
-    fun `discard win 3-fan east winner south discarder`() {
-        val input = RoundInput(
-            winner = Seat.EAST,
-            winType = WinType.DISCARD_WIN,
-            fanCount = 3,
-            discarder = Seat.SOUTH,
-        )
-        val result = ScoreEngine.calculate(input, defaultRules)
-        assertEquals(32, result.deltas[Seat.EAST])
-        assertEquals(-32, result.deltas[Seat.SOUTH])
-        assertEquals(0, result.deltas[Seat.WEST])
+    fun `hk new discard win 5-fan`() {
+        val input = RoundInput.Fan(Seat.WEST, WinType.DISCARD_WIN, discarder = Seat.SOUTH, fanCount = 5)
+        val result = ScoreEngine.calculate(input, hkDefaults)
+        // 2 * 5 = 10
+        assertEquals(10, result.deltas[Seat.WEST])
+        assertEquals(-10, result.deltas[Seat.SOUTH])
+        assertEquals(0, result.deltas[Seat.EAST])
         assertEquals(0, result.deltas[Seat.NORTH])
-        assertEquals(32, result.perLoserAmount)
-        assertEquals(32, result.totalAmount)
     }
 
-    // ---------- property test: delta sum is always zero ----------
+    @Test
+    fun `hk new max fan caps payment`() {
+        val rules = ScoreRules.HongKongNew(discardBase = 2, selfDrawBase = 1, maxFan = 10)
+        val input = RoundInput.Fan(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.WEST, fanCount = 15)
+        val result = ScoreEngine.calculate(input, rules)
+        assertEquals(20, result.deltas[Seat.EAST])
+    }
 
     @Test
-    fun `delta sum is zero across all fan x winType x winner x discarder combos`() {
-        for (fan in 1..10) {
+    fun `hk new delta sum zero across combinations`() {
+        for (fan in 1..13) {
             for (winner in Seat.entries) {
-                // self draw: no discarder
-                val selfDraw = RoundInput(
-                    winner = winner,
-                    winType = WinType.SELF_DRAW,
-                    fanCount = fan,
-                )
-                val selfDrawSum = ScoreEngine.calculate(selfDraw, defaultRules).deltas.values.sum()
-                assertEquals("self draw fan=$fan winner=$winner", 0, selfDrawSum)
-
-                // discard win: every non-winner seat as discarder
+                val sd = RoundInput.Fan(winner, WinType.SELF_DRAW, fanCount = fan)
+                assertEquals(0, ScoreEngine.calculate(sd, hkDefaults).deltas.values.sum())
                 for (discarder in Seat.entries) {
                     if (discarder == winner) continue
-                    val discardWin = RoundInput(
-                        winner = winner,
-                        winType = WinType.DISCARD_WIN,
-                        fanCount = fan,
-                        discarder = discarder,
-                    )
-                    val discardSum = ScoreEngine.calculate(discardWin, defaultRules).deltas.values.sum()
-                    assertEquals(
-                        "discard win fan=$fan winner=$winner discarder=$discarder",
-                        0,
-                        discardSum,
-                    )
+                    val dw = RoundInput.Fan(winner, WinType.DISCARD_WIN, discarder = discarder, fanCount = fan)
+                    assertEquals(0, ScoreEngine.calculate(dw, hkDefaults).deltas.values.sum())
                 }
             }
         }
     }
 
-    // ---------- computeTotals ----------
+    @Test
+    fun `hk new rejects mismatched input type`() {
+        val input = RoundInput.Tai(Seat.EAST, WinType.SELF_DRAW, taiCount = 5)
+        assertEquals(ValidationError.InputTypeMismatch, ScoreEngine.validate(input, hkDefaults))
+    }
+
+    // ---------- Taiwanese 16-tile ----------
+
+    private val twDefaults = ScoreRules.Taiwanese()
 
     @Test
-    fun `computeTotals on empty history returns all seats at zero`() {
-        val totals = ScoreEngine.computeTotals(emptyList())
-        assertEquals(4, totals.size)
-        Seat.entries.forEach { seat ->
-            assertEquals("seat $seat", 0, totals[seat])
-        }
+    fun `taiwanese dealer self-draw at 6 tai each non-dealer pays double`() {
+        val input = RoundInput.Tai(Seat.EAST, WinType.SELF_DRAW, taiCount = 6, dealer = Seat.EAST)
+        val result = ScoreEngine.calculate(input, twDefaults)
+        // effTai = 6 + 1 (self-draw bonus) = 7; unit = 1 + 7*1 = 8
+        // winnerIsDealer: each non-dealer pays 8 * 2 = 16
+        assertEquals(-16, result.deltas[Seat.SOUTH])
+        assertEquals(-16, result.deltas[Seat.WEST])
+        assertEquals(-16, result.deltas[Seat.NORTH])
+        assertEquals(48, result.deltas[Seat.EAST])
     }
 
     @Test
-    fun `commit then undo round-trips totals via computeTotals`() {
-        val input = RoundInput(
-            winner = Seat.WEST,
-            winType = WinType.DISCARD_WIN,
-            fanCount = 5,
-            discarder = Seat.NORTH,
+    fun `taiwanese non-dealer wins by discard from dealer pays double`() {
+        val input = RoundInput.Tai(
+            winner = Seat.SOUTH, winType = WinType.DISCARD_WIN, discarder = Seat.EAST,
+            taiCount = 5, dealer = Seat.EAST,
         )
-        val result = ScoreEngine.calculate(input, defaultRules)
-        val committed = CommittedRound(input, result, timestampMillis = 1_000L)
-
-        val afterCommit = ScoreEngine.computeTotals(listOf(committed))
-        assertEquals(128, afterCommit[Seat.WEST])
-        assertEquals(-128, afterCommit[Seat.NORTH])
-
-        val afterUndo = ScoreEngine.computeTotals(emptyList())
-        Seat.entries.forEach { seat ->
-            assertEquals(0, afterUndo[seat])
-        }
+        val result = ScoreEngine.calculate(input, twDefaults)
+        // unit = 1 + 5*1 = 6 (no self-draw bonus); dealer involved → × 2 = 12
+        assertEquals(12, result.deltas[Seat.SOUTH])
+        assertEquals(-12, result.deltas[Seat.EAST])
     }
 
     @Test
-    fun `computeTotals sums multiple rounds`() {
-        val first = CommittedRound(
-            input = RoundInput(Seat.EAST, WinType.SELF_DRAW, 2),
-            result = ScoreEngine.calculate(
-                RoundInput(Seat.EAST, WinType.SELF_DRAW, 2),
-                defaultRules,
-            ),
-            timestampMillis = 1L,
+    fun `taiwanese non-dealer self-draw with dealer as one loser`() {
+        val input = RoundInput.Tai(Seat.SOUTH, WinType.SELF_DRAW, taiCount = 5, dealer = Seat.EAST)
+        val result = ScoreEngine.calculate(input, twDefaults)
+        // effTai = 6, unit = 7
+        // EAST (dealer) pays 14, others pay 7
+        assertEquals(-14, result.deltas[Seat.EAST])
+        assertEquals(-7, result.deltas[Seat.WEST])
+        assertEquals(-7, result.deltas[Seat.NORTH])
+        assertEquals(28, result.deltas[Seat.SOUTH])
+    }
+
+    @Test
+    fun `taiwanese rejects tai below min`() {
+        val input = RoundInput.Tai(Seat.EAST, WinType.SELF_DRAW, taiCount = 3, dealer = Seat.EAST)
+        assertEquals(ValidationError.TaiBelowMin, ScoreEngine.validate(input, twDefaults))
+    }
+
+    // ---------- Hokkien ----------
+
+    private val hkDefaults2 = ScoreRules.Hokkien()
+
+    @Test
+    fun `hokkien default self-draw linear no dealer bonus`() {
+        val input = RoundInput.Tai(Seat.WEST, WinType.SELF_DRAW, taiCount = 3, dealer = Seat.EAST)
+        val result = ScoreEngine.calculate(input, hkDefaults2)
+        // unit = 1 + 3*1 = 4; no dealer doubling by default
+        assertEquals(-4, result.deltas[Seat.EAST])
+        assertEquals(-4, result.deltas[Seat.SOUTH])
+        assertEquals(12, result.deltas[Seat.WEST])
+        assertEquals(-4, result.deltas[Seat.NORTH])
+    }
+
+    @Test
+    fun `hokkien respects max units cap`() {
+        val rules = ScoreRules.Hokkien(base = 1, perUnit = 2, maxUnits = 5)
+        val input = RoundInput.Tai(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.SOUTH, taiCount = 20)
+        val result = ScoreEngine.calculate(input, rules)
+        // capped at 5: unit = 1 + 5*2 = 11
+        assertEquals(11, result.deltas[Seat.EAST])
+        assertEquals(-11, result.deltas[Seat.SOUTH])
+    }
+
+    @Test
+    fun `hokkien with dealer doubling applies 2x for dealer involvement`() {
+        val rules = ScoreRules.Hokkien(dealerDoubles = true)
+        val input = RoundInput.Tai(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.SOUTH, taiCount = 2, dealer = Seat.EAST)
+        val result = ScoreEngine.calculate(input, rules)
+        // unit = 1 + 2*1 = 3; dealer won → × 2 = 6
+        assertEquals(6, result.deltas[Seat.EAST])
+        assertEquals(-6, result.deltas[Seat.SOUTH])
+    }
+
+    // ---------- Shanghai ----------
+
+    private val shDefaults = ScoreRules.Shanghai()
+
+    @Test
+    fun `shanghai doubling formula caps at maxFan`() {
+        val rules = ScoreRules.Shanghai(base = 1, maxFan = 8)
+        val input = RoundInput.Fan(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.WEST, fanCount = 10)
+        val result = ScoreEngine.calculate(input, rules)
+        // capped at 8: 1 * 2^7 = 128
+        assertEquals(128, result.deltas[Seat.EAST])
+        assertEquals(-128, result.deltas[Seat.WEST])
+    }
+
+    // ---------- Sichuan ----------
+
+    @Test
+    fun `sichuan defaults doubling with 5 fan cap`() {
+        val rules = ScoreRules.Sichuan()
+        val input = RoundInput.Fan(Seat.EAST, WinType.SELF_DRAW, fanCount = 10)
+        val result = ScoreEngine.calculate(input, rules)
+        // cap=5: 1 * 2^4 = 16 per loser, winner = 48
+        assertEquals(48, result.deltas[Seat.EAST])
+        assertEquals(-16, result.deltas[Seat.SOUTH])
+    }
+
+    // ---------- Singaporean ----------
+
+    @Test
+    fun `singaporean adds flower and animal bonuses`() {
+        val rules = ScoreRules.Singaporean()
+        val input = RoundInput.Fan(
+            Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.WEST,
+            fanCount = 3, flowerCount = 2, animalCount = 1,
         )
-        val second = CommittedRound(
-            input = RoundInput(Seat.SOUTH, WinType.DISCARD_WIN, 3, Seat.EAST),
-            result = ScoreEngine.calculate(
-                RoundInput(Seat.SOUTH, WinType.DISCARD_WIN, 3, Seat.EAST),
-                defaultRules,
-            ),
-            timestampMillis = 2L,
+        val result = ScoreEngine.calculate(input, rules)
+        // 2 * 3 + 2*1 + 1*2 = 10
+        assertEquals(10, result.deltas[Seat.EAST])
+        assertEquals(-10, result.deltas[Seat.WEST])
+    }
+
+    // ---------- Japanese Riichi ----------
+
+    private val rDefaults = ScoreRules.JapaneseRiichi()
+
+    @Test
+    fun `riichi non-dealer tsumo 3 han 30 fu`() {
+        // basic = 30 * 2^5 = 960; non-dealer tsumo: dealer 2*960=1920 → 2000, each non-dealer 960 → 1000
+        val input = RoundInput.Riichi(
+            winner = Seat.SOUTH, winType = WinType.SELF_DRAW,
+            han = 3, fu = 30, dealer = Seat.EAST,
         )
-        val totals = ScoreEngine.computeTotals(listOf(first, second))
-        // First round: EAST +24, S/W/N −8 each
-        // Second round: SOUTH +32, EAST −32
-        assertEquals(24 - 32, totals[Seat.EAST])
-        assertEquals(-8 + 32, totals[Seat.SOUTH])
-        assertEquals(-8, totals[Seat.WEST])
-        assertEquals(-8, totals[Seat.NORTH])
-        assertEquals(0, totals.values.sum())
-    }
-
-    // ---------- validate: every branch ----------
-
-    @Test
-    fun `validate passes on valid self draw`() {
-        val input = RoundInput(Seat.EAST, WinType.SELF_DRAW, 1)
-        assertNull(ScoreEngine.validate(input, defaultRules))
+        val result = ScoreEngine.calculate(input, rDefaults)
+        assertEquals(-2000, result.deltas[Seat.EAST])
+        assertEquals(-1000, result.deltas[Seat.WEST])
+        assertEquals(-1000, result.deltas[Seat.NORTH])
+        assertEquals(4000, result.deltas[Seat.SOUTH])
     }
 
     @Test
-    fun `validate passes on valid discard win`() {
-        val input = RoundInput(Seat.EAST, WinType.DISCARD_WIN, 1, Seat.SOUTH)
-        assertNull(ScoreEngine.validate(input, defaultRules))
-    }
-
-    @Test
-    fun `validate rejects fan below one`() {
-        val input = RoundInput(Seat.EAST, WinType.SELF_DRAW, 0)
-        assertEquals(ValidationError.FanBelowOne, ScoreEngine.validate(input, defaultRules))
-    }
-
-    @Test
-    fun `validate rejects discarder required`() {
-        val input = RoundInput(Seat.EAST, WinType.DISCARD_WIN, 1, discarder = null)
-        assertEquals(ValidationError.DiscarderRequired, ScoreEngine.validate(input, defaultRules))
-    }
-
-    @Test
-    fun `validate rejects discarder forbidden for self draw`() {
-        val input = RoundInput(Seat.EAST, WinType.SELF_DRAW, 1, discarder = Seat.SOUTH)
-        assertEquals(
-            ValidationError.DiscarderForbiddenForSelfDraw,
-            ScoreEngine.validate(input, defaultRules),
+    fun `riichi mangan non-dealer ron 5 han any fu`() {
+        // 5 han → mangan basic 2000; non-dealer ron: 2000 * 4 = 8000
+        val input = RoundInput.Riichi(
+            winner = Seat.SOUTH, winType = WinType.DISCARD_WIN, discarder = Seat.EAST,
+            han = 5, fu = 30, dealer = Seat.EAST,
         )
+        val result = ScoreEngine.calculate(input, rDefaults)
+        assertEquals(8000, result.deltas[Seat.SOUTH])
+        assertEquals(-8000, result.deltas[Seat.EAST])
     }
 
     @Test
-    fun `validate rejects winner equals discarder`() {
-        val input = RoundInput(Seat.EAST, WinType.DISCARD_WIN, 1, discarder = Seat.EAST)
-        assertEquals(ValidationError.WinnerIsDiscarder, ScoreEngine.validate(input, defaultRules))
+    fun `riichi dealer ron 4 han 30 fu is 11600`() {
+        // basic = 30 * 2^6 = 1920; dealer ron: 1920 * 6 = 11520 → 11600
+        val input = RoundInput.Riichi(
+            winner = Seat.EAST, winType = WinType.DISCARD_WIN, discarder = Seat.WEST,
+            han = 4, fu = 30, dealer = Seat.EAST,
+        )
+        val result = ScoreEngine.calculate(input, rDefaults)
+        assertEquals(11600, result.deltas[Seat.EAST])
+        assertEquals(-11600, result.deltas[Seat.WEST])
     }
 
     @Test
-    fun `validate rejects negative base rules`() {
-        val rules = ScoreRules(selfDrawBase = -1, discardWinBase = 8)
-        val input = RoundInput(Seat.EAST, WinType.SELF_DRAW, 1)
-        assertEquals(ValidationError.NegativeBase, ScoreEngine.validate(input, rules))
+    fun `riichi yakuman non-dealer ron is 32000`() {
+        val input = RoundInput.Riichi(
+            winner = Seat.WEST, winType = WinType.DISCARD_WIN, discarder = Seat.EAST,
+            han = 13, fu = 30, dealer = Seat.EAST,
+        )
+        val result = ScoreEngine.calculate(input, rDefaults)
+        // basic = 8000; non-dealer ron = 8000*4 = 32000
+        assertEquals(32000, result.deltas[Seat.WEST])
+        assertEquals(-32000, result.deltas[Seat.EAST])
+    }
+
+    @Test
+    fun `riichi honba adds 300 per counter on ron`() {
+        val input = RoundInput.Riichi(
+            winner = Seat.SOUTH, winType = WinType.DISCARD_WIN, discarder = Seat.EAST,
+            han = 5, fu = 30, dealer = Seat.EAST, honbaCount = 2,
+        )
+        val result = ScoreEngine.calculate(input, rDefaults)
+        // mangan 8000 + 2*300 = 8600
+        assertEquals(8600, result.deltas[Seat.SOUTH])
+        assertEquals(-8600, result.deltas[Seat.EAST])
+    }
+
+    @Test
+    fun `riichi honba adds 100 per counter per payer on tsumo`() {
+        val input = RoundInput.Riichi(
+            winner = Seat.SOUTH, winType = WinType.SELF_DRAW,
+            han = 5, fu = 30, dealer = Seat.EAST, honbaCount = 1,
+        )
+        val result = ScoreEngine.calculate(input, rDefaults)
+        // mangan non-dealer tsumo: dealer 4000, non-dealer 2000; +100 per payer
+        assertEquals(-4100, result.deltas[Seat.EAST])
+        assertEquals(-2100, result.deltas[Seat.WEST])
+        assertEquals(-2100, result.deltas[Seat.NORTH])
+        assertEquals(8300, result.deltas[Seat.SOUTH])
+    }
+
+    @Test
+    fun `riichi riichi sticks surfaced as stickBonus`() {
+        val input = RoundInput.Riichi(
+            winner = Seat.SOUTH, winType = WinType.DISCARD_WIN, discarder = Seat.EAST,
+            han = 3, fu = 30, dealer = Seat.EAST, riichiSticks = 2,
+        )
+        val result = ScoreEngine.calculate(input, rDefaults)
+        assertEquals(2000, result.stickBonus)
+        assertEquals(0, result.deltas.values.sum())
+    }
+
+    @Test
+    fun `riichi kiriage mangan promotes 4 han 30 fu`() {
+        val rules = ScoreRules.JapaneseRiichi(kiriageMangan = true)
+        val input = RoundInput.Riichi(
+            winner = Seat.SOUTH, winType = WinType.DISCARD_WIN, discarder = Seat.EAST,
+            han = 4, fu = 30, dealer = Seat.EAST,
+        )
+        val result = ScoreEngine.calculate(input, rules)
+        // promoted: basic 2000, non-dealer ron = 8000
+        assertEquals(8000, result.deltas[Seat.SOUTH])
+    }
+
+    @Test
+    fun `riichi basicPoints table`() {
+        assertEquals(2000, RiichiEngine.basicPoints(5, 30, false))
+        assertEquals(3000, RiichiEngine.basicPoints(6, 30, false))
+        assertEquals(4000, RiichiEngine.basicPoints(8, 30, false))
+        assertEquals(6000, RiichiEngine.basicPoints(11, 30, false))
+        assertEquals(8000, RiichiEngine.basicPoints(13, 30, false))
+        // han < 5 computes fu*2^(han+2) capped at 2000
+        assertEquals(480, RiichiEngine.basicPoints(2, 30, false))  // 30 * 16 = 480
+        assertEquals(1920, RiichiEngine.basicPoints(4, 30, false)) // 30 * 64 = 1920
+        assertEquals(2000, RiichiEngine.basicPoints(4, 40, false)) // 40 * 64 = 2560 → cap 2000
+    }
+
+    @Test
+    fun `riichi rejects fu below 20`() {
+        val input = RoundInput.Riichi(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.WEST, han = 1, fu = 10)
+        assertEquals(ValidationError.FuBelowMin, ScoreEngine.validate(input, rDefaults))
+    }
+
+    @Test
+    fun `riichi rejects invalid fu`() {
+        val input = RoundInput.Riichi(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.WEST, han = 1, fu = 33)
+        assertEquals(ValidationError.FuInvalid, ScoreEngine.validate(input, rDefaults))
+    }
+
+    @Test
+    fun `riichi rejects han below 1`() {
+        val input = RoundInput.Riichi(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.WEST, han = 0, fu = 30)
+        assertEquals(ValidationError.HanBelowOne, ScoreEngine.validate(input, rDefaults))
+    }
+
+    // ---------- shared validation paths ----------
+
+    @Test
+    fun `shared discarder required for discard-win`() {
+        val input = RoundInput.Fan(Seat.EAST, WinType.DISCARD_WIN, fanCount = 1)
+        assertEquals(ValidationError.DiscarderRequired, ScoreEngine.validate(input, hkDefaults))
+    }
+
+    @Test
+    fun `shared discarder forbidden for self-draw`() {
+        val input = RoundInput.Fan(Seat.EAST, WinType.SELF_DRAW, discarder = Seat.SOUTH, fanCount = 1)
+        assertEquals(ValidationError.DiscarderForbiddenForSelfDraw, ScoreEngine.validate(input, hkDefaults))
+    }
+
+    @Test
+    fun `shared winner equals discarder rejected`() {
+        val input = RoundInput.Fan(Seat.EAST, WinType.DISCARD_WIN, discarder = Seat.EAST, fanCount = 1)
+        assertEquals(ValidationError.WinnerIsDiscarder, ScoreEngine.validate(input, hkDefaults))
     }
 
     @Test
     fun `calculate throws on invalid input`() {
-        val input = RoundInput(Seat.EAST, WinType.DISCARD_WIN, 1, discarder = null)
-        val ex = runCatching { ScoreEngine.calculate(input, defaultRules) }.exceptionOrNull()
+        val input = RoundInput.Fan(Seat.EAST, WinType.DISCARD_WIN, fanCount = 1)
+        val ex = runCatching { ScoreEngine.calculate(input, hkDefaults) }.exceptionOrNull()
         assertNotNull(ex)
         assertTrue(ex is IllegalArgumentException)
+    }
+
+    // ---------- computeTotals ----------
+
+    @Test
+    fun `computeTotals empty returns zeros`() {
+        val totals = ScoreEngine.computeTotals(emptyList())
+        Seat.entries.forEach { assertEquals(0, totals[it]) }
+    }
+
+    @Test
+    fun `computeTotals sums deltas and stick bonuses`() {
+        val input = RoundInput.Riichi(
+            winner = Seat.SOUTH, winType = WinType.DISCARD_WIN, discarder = Seat.EAST,
+            han = 3, fu = 30, dealer = Seat.EAST, riichiSticks = 1,
+        )
+        val result = ScoreEngine.calculate(input, rDefaults)
+        val committed = CommittedRound(input, result, timestampMillis = 1L)
+        val totals = ScoreEngine.computeTotals(listOf(committed))
+        // Ron 3han 30fu non-dealer: basic 960 × 4 = 3840 → 3900. +stick 1000 for winner.
+        assertEquals(3900 + 1000, totals[Seat.SOUTH])
+        assertEquals(-3900, totals[Seat.EAST])
     }
 }

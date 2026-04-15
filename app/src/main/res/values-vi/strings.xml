@@ -1,0 +1,187 @@
+<resources>
+    <string name="app_name">Theo Dõi Điểm Mahjong</string>
+
+    <!-- Seats -->
+    <string name="seat_east">Đông</string>
+    <string name="seat_south">Nam</string>
+    <string name="seat_west">Tây</string>
+    <string name="seat_north">Bắc</string>
+    <string name="seat_east_short">Đ</string>
+    <string name="seat_south_short">N</string>
+    <string name="seat_west_short">T</string>
+    <string name="seat_north_short">B</string>
+
+    <!-- Win types -->
+    <string name="win_type_self_draw">Tự mỗ</string>
+    <string name="win_type_discard">Ăn từ bỏ</string>
+
+    <!-- Main screen labels -->
+    <string name="label_round_winner">Người thắng ván</string>
+    <string name="label_win_type">Kiểu thắng</string>
+    <string name="label_fan_count">Số fan</string>
+    <string name="label_discarder">Người bỏ bài</string>
+    <string name="label_required">Bắt buộc</string>
+    <string name="label_live_session">Ván đang chơi</string>
+
+    <!-- Actions -->
+    <string name="action_commit_round">Lưu ván</string>
+    <string name="action_undo">Hoàn tác</string>
+    <string name="action_reset">Đặt lại</string>
+    <string name="action_save">Lưu</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="action_increase">Tăng</string>
+    <string name="action_decrease">Giảm</string>
+    <string name="action_settings">Cài đặt</string>
+    <string name="action_back">Quay lại</string>
+
+    <!-- Screen titles -->
+    <string name="title_main">Bảng điểm</string>
+    <string name="title_score_table">Bảng tính điểm</string>
+    <string name="title_logs">Nhật ký ván</string>
+    <string name="title_stats">Thống kê người chơi</string>
+    <string name="title_settings">Cài đặt</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_scoreboard">Bảng điểm</string>
+    <string name="nav_score_table">Bảng điểm</string>
+    <string name="nav_logs">Nhật ký</string>
+    <string name="nav_stats">Thống kê</string>
+
+    <!-- Preview / summary -->
+    <string name="preview_empty">Chọn người thắng để xem trước ván.</string>
+    <string name="preview_title_self_draw">Tự mỗ %1$d fan</string>
+    <string name="preview_title_discard">Thắng do bỏ bài %1$d fan</string>
+    <string name="preview_row_pays">%1$s trả</string>
+    <string name="preview_row_gains">%1$s nhận</string>
+    <string name="preview_subtitle">Tính theo luật hiện tại</string>
+
+    <!-- Validation errors -->
+    <string name="error_no_winner">Hãy chọn người thắng.</string>
+    <string name="error_fan_below_one">Số fan phải ít nhất là 1.</string>
+    <string name="error_discarder_required">Hãy chọn người bỏ bài.</string>
+    <string name="error_discarder_forbidden_self_draw">Tự mỗ không có người bỏ bài.</string>
+    <string name="error_winner_is_discarder">Người thắng và người bỏ bài phải khác nhau.</string>
+    <string name="error_negative_base">Điểm gốc không được âm.</string>
+
+    <!-- Logs -->
+    <string name="logs_empty">Chưa có ván nào được lưu.</string>
+    <string name="logs_entry_self_draw">%1$s — Tự mỗ, %2$d fan</string>
+    <string name="logs_entry_discard">%1$s thắng %2$s — %3$d fan</string>
+
+    <!-- Stats -->
+    <string name="stats_empty">Chưa có ván nào. Lưu một ván để xem thống kê.</string>
+    <string name="stats_total">Tổng</string>
+    <string name="stats_hands_won">Số ván thắng</string>
+    <string name="stats_best_round">Ván tốt nhất</string>
+    <string name="stats_worst_round">Ván tệ nhất</string>
+
+    <!-- Score Table screen -->
+    <string name="score_table_rules_header">Luật tính điểm</string>
+    <string name="score_table_discard_win_base">Điểm gốc thắng do bỏ bài (1 fan)</string>
+    <string name="score_table_self_draw_base">Điểm gốc tự mỗ (1 fan)</string>
+    <string name="score_table_self_draw_derived">Điểm gốc tự mỗ (1 fan): %1$d (một nửa thắng do bỏ bài)</string>
+    <string name="score_table_custom_self_draw_title">Điểm gốc tự mỗ tùy chỉnh</string>
+    <string name="score_table_custom_self_draw_subtitle">Đặt riêng thay vì tự động lấy một nửa điểm thắng do bỏ bài</string>
+    <string name="score_table_fan_points_title">Bảng tham chiếu điểm fan</string>
+    <string name="score_table_col_fan">Fan</string>
+    <string name="score_table_col_self_draw">Tự mỗ</string>
+    <string name="score_table_col_discard">Bỏ bài</string>
+    <string name="score_table_saved">Đã lưu luật tính điểm</string>
+
+    <!-- Settings screen -->
+    <string name="settings_appearance_header">Giao diện</string>
+    <string name="settings_theme_label">Chủ đề</string>
+    <string name="settings_theme_system">Mặc định hệ thống</string>
+    <string name="settings_theme_light">Sáng</string>
+    <string name="settings_theme_dark">Tối</string>
+    <string name="settings_language_header">Ngôn ngữ</string>
+    <string name="settings_language_system">Mặc định hệ thống</string>
+    <string name="settings_about_header">Thông tin</string>
+    <string name="settings_about_version">Phiên bản %1$s</string>
+
+    <!-- Reset dialog -->
+    <string name="reset_dialog_title">Đặt lại ván chơi?</string>
+    <string name="reset_dialog_message">Thao tác này sẽ xóa tổng điểm của mọi người chơi và lịch sử các ván. Không thể hoàn tác.</string>
+    <string name="reset_dialog_confirm">Đặt lại</string>
+
+    <!-- Validation errors (new variants) -->
+    <string name="error_tai_below_one">Số tai phải ít nhất là 1.</string>
+    <string name="error_tai_below_min">Số tai thấp hơn mức tối thiểu.</string>
+    <string name="error_han_below_one">Han phải ít nhất là 1.</string>
+    <string name="error_fu_below_min">Fu phải ít nhất là 20.</string>
+    <string name="error_fu_invalid">Giá trị fu không hợp lệ.</string>
+    <string name="error_input_type_mismatch">Kiểu nhập không khớp với luật tính điểm.</string>
+    <string name="error_negative_count">Số lượng không được âm.</string>
+
+    <!-- Game Variants -->
+    <string name="variant_hong_kong_new">Hong Kong kiểu mới</string>
+    <string name="variant_taiwanese">Đài Loan 16 quân</string>
+    <string name="variant_japanese_riichi">Riichi Nhật Bản</string>
+    <string name="variant_hokkien">Hokkien/Phúc Kiến</string>
+    <string name="variant_shanghai">Thượng Hải</string>
+    <string name="variant_sichuan">Tứ Xuyên</string>
+    <string name="variant_singaporean">Singapore</string>
+
+    <!-- Settings – Variant section -->
+    <string name="settings_variant_header">Thể loại chơi</string>
+    <string name="settings_variant_change_title">Đổi thể loại?</string>
+    <string name="settings_variant_change_message">Đổi thể loại sẽ xóa toàn bộ lịch sử ván. Tiếp tục?</string>
+    <string name="settings_variant_change_confirm">Đổi</string>
+
+    <!-- Labels (new variants) -->
+    <string name="label_tai_count">Số tai</string>
+    <string name="label_han">Han</string>
+    <string name="label_fu">Fu</string>
+    <string name="label_honba">Honba</string>
+    <string name="label_riichi_sticks">Gậy riichi trên bàn</string>
+    <string name="label_flower_count">Số quân hoa</string>
+    <string name="label_animal_count">Số quân con vật</string>
+    <string name="label_dealer">Nhà cái</string>
+
+    <!-- Preview titles (new variants) -->
+    <string name="preview_title_self_draw_tai">Tự mỗ %1$d tai</string>
+    <string name="preview_title_discard_tai">Thắng do bỏ bài %1$d tai</string>
+    <string name="preview_title_riichi_tsumo">Tsumo %1$d han %2$d fu</string>
+    <string name="preview_title_riichi_ron">Ron %1$d han %2$d fu</string>
+    <string name="preview_stick_bonus">+%1$d thưởng (gậy riichi)</string>
+
+    <!-- Logs (new variants) -->
+    <string name="logs_entry_self_draw_tai">%1$s — Tự mỗ, %2$d tai</string>
+    <string name="logs_entry_discard_tai">%1$s thắng %2$s — %3$d tai</string>
+    <string name="logs_entry_self_draw_riichi">%1$s — Tsumo, %2$d han %3$d fu</string>
+    <string name="logs_entry_discard_riichi">%1$s thắng %2$s — %3$d han %4$d fu</string>
+
+    <!-- Score Table – rules editor labels -->
+    <string name="rules_hk_discard_base">Điểm gốc thắng do bỏ bài (1 fan)</string>
+    <string name="rules_hk_self_draw_base">Điểm gốc tự mỗ (1 fan)</string>
+    <string name="rules_hk_max_fan">Fan tối đa (0 = không giới hạn)</string>
+    <string name="rules_hk_custom_self_draw_title">Điểm gốc tự mỗ tùy chỉnh</string>
+    <string name="rules_hk_custom_self_draw_subtitle">Đặt riêng thay vì tự động lấy một nửa điểm thắng do bỏ bài</string>
+    <string name="rules_hk_self_draw_derived">Điểm gốc tự mỗ: %1$d (một nửa thắng do bỏ bài)</string>
+    <string name="rules_tw_base">Điểm cơ bản</string>
+    <string name="rules_tw_per_tai">Điểm mỗi tai</string>
+    <string name="rules_tw_min_tai">Tai tối thiểu</string>
+    <string name="rules_tw_self_draw_bonus_tai">Tai thưởng tự mỗ</string>
+    <string name="rules_tw_dealer_multiplier">Hệ số nhà cái</string>
+    <string name="rules_hok_base">Điểm cơ bản</string>
+    <string name="rules_hok_per_unit">Điểm mỗi đơn vị</string>
+    <string name="rules_hok_max_units">Đơn vị tối đa (0 = không giới hạn)</string>
+    <string name="rules_hok_dealer_doubles">Nhà cái nhân đôi</string>
+    <string name="rules_ri_kiriage_mangan">Kiriage mangan</string>
+    <string name="rules_ri_honba_value">Giá trị honba (điểm mỗi counter)</string>
+    <string name="rules_ri_stick_value">Giá trị gậy riichi (điểm)</string>
+    <string name="rules_sh_base">Điểm gốc (1 fan)</string>
+    <string name="rules_sh_max_fan">Fan tối đa</string>
+    <string name="rules_sg_flower_bonus">Thưởng quân hoa (mỗi quân)</string>
+    <string name="rules_sg_animal_bonus">Thưởng quân con vật (mỗi quân)</string>
+
+    <!-- Score Table – column headers -->
+    <string name="score_table_col_tai">Tai</string>
+    <string name="score_table_col_payout">Tiền trả</string>
+    <string name="score_table_col_han">Han</string>
+    <string name="score_table_col_non_dealer_ron">Ron không nhà cái</string>
+    <string name="score_table_col_dealer_ron">Ron nhà cái</string>
+    <string name="score_table_riichi_reference">Mốc điểm Riichi</string>
+    <string name="score_table_col_non_dealer_tsumo">Tsumo không nhà cái</string>
+    <string name="score_table_col_dealer_tsumo">Tsumo nhà cái</string>
+</resources>

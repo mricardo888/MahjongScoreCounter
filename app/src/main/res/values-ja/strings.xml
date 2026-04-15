@@ -1,0 +1,187 @@
+<resources>
+    <string name="app_name">麻雀点数トラッカー</string>
+
+    <!-- Seats -->
+    <string name="seat_east">東</string>
+    <string name="seat_south">南</string>
+    <string name="seat_west">西</string>
+    <string name="seat_north">北</string>
+    <string name="seat_east_short">東</string>
+    <string name="seat_south_short">南</string>
+    <string name="seat_west_short">西</string>
+    <string name="seat_north_short">北</string>
+
+    <!-- Win types -->
+    <string name="win_type_self_draw">ツモ</string>
+    <string name="win_type_discard">ロン</string>
+
+    <!-- Main screen labels -->
+    <string name="label_round_winner">局の勝者</string>
+    <string name="label_win_type">和了方法</string>
+    <string name="label_fan_count">翻数</string>
+    <string name="label_discarder">放銃者</string>
+    <string name="label_required">必須</string>
+    <string name="label_live_session">進行中の対局</string>
+
+    <!-- Actions -->
+    <string name="action_commit_round">局を記録</string>
+    <string name="action_undo">元に戻す</string>
+    <string name="action_reset">リセット</string>
+    <string name="action_save">保存</string>
+    <string name="action_cancel">キャンセル</string>
+    <string name="action_increase">増やす</string>
+    <string name="action_decrease">減らす</string>
+    <string name="action_settings">設定</string>
+    <string name="action_back">戻る</string>
+
+    <!-- Screen titles -->
+    <string name="title_main">スコアボード</string>
+    <string name="title_score_table">点数表</string>
+    <string name="title_logs">局ログ</string>
+    <string name="title_stats">プレイヤー統計</string>
+    <string name="title_settings">設定</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_scoreboard">スコア</string>
+    <string name="nav_score_table">点数表</string>
+    <string name="nav_logs">ログ</string>
+    <string name="nav_stats">統計</string>
+
+    <!-- Preview / summary -->
+    <string name="preview_empty">勝者を選択すると局のプレビューを表示します。</string>
+    <string name="preview_title_self_draw">%1$d翻 ツモ</string>
+    <string name="preview_title_discard">%1$d翻 ロン</string>
+    <string name="preview_row_pays">%1$s が支払う</string>
+    <string name="preview_row_gains">%1$s が獲得</string>
+    <string name="preview_subtitle">現在のルールで計算</string>
+
+    <!-- Validation errors -->
+    <string name="error_no_winner">勝者を選択してください。</string>
+    <string name="error_fan_below_one">翻数は 1 以上である必要があります。</string>
+    <string name="error_discarder_required">放銃者を選択してください。</string>
+    <string name="error_discarder_forbidden_self_draw">ツモに放銃者はありません。</string>
+    <string name="error_winner_is_discarder">勝者と放銃者は別である必要があります。</string>
+    <string name="error_negative_base">基本点は 0 以上である必要があります。</string>
+
+    <!-- Logs -->
+    <string name="logs_empty">まだ記録された局はありません。</string>
+    <string name="logs_entry_self_draw">%1$s — ツモ、%2$d翻</string>
+    <string name="logs_entry_discard">%1$s が %2$s からロン — %3$d翻</string>
+
+    <!-- Stats -->
+    <string name="stats_empty">まだ局がありません。局を記録すると統計を表示できます。</string>
+    <string name="stats_total">合計</string>
+    <string name="stats_hands_won">和了回数</string>
+    <string name="stats_best_round">最高の局</string>
+    <string name="stats_worst_round">最低の局</string>
+
+    <!-- Score Table screen -->
+    <string name="score_table_rules_header">点数ルール</string>
+    <string name="score_table_discard_win_base">ロン基本点 (1翻)</string>
+    <string name="score_table_self_draw_base">ツモ基本点 (1翻)</string>
+    <string name="score_table_self_draw_derived">ツモ基本点 (1翻): %1$d (ロンの半分)</string>
+    <string name="score_table_custom_self_draw_title">ツモ基本点を個別設定</string>
+    <string name="score_table_custom_self_draw_subtitle">ロン基本点の半分を自動適用せず個別に設定します</string>
+    <string name="score_table_fan_points_title">翻数点数早見表</string>
+    <string name="score_table_col_fan">翻</string>
+    <string name="score_table_col_self_draw">ツモ</string>
+    <string name="score_table_col_discard">ロン</string>
+    <string name="score_table_saved">点数ルールを保存しました</string>
+
+    <!-- Settings screen -->
+    <string name="settings_appearance_header">表示</string>
+    <string name="settings_theme_label">テーマ</string>
+    <string name="settings_theme_system">システム標準</string>
+    <string name="settings_theme_light">ライト</string>
+    <string name="settings_theme_dark">ダーク</string>
+    <string name="settings_language_header">言語</string>
+    <string name="settings_language_system">システム標準</string>
+    <string name="settings_about_header">アプリ情報</string>
+    <string name="settings_about_version">バージョン %1$s</string>
+
+    <!-- Reset dialog -->
+    <string name="reset_dialog_title">ゲームをリセットしますか？</string>
+    <string name="reset_dialog_message">全プレイヤーの合計点と局履歴が消去されます。この操作は元に戻せません。</string>
+    <string name="reset_dialog_confirm">リセット</string>
+
+    <!-- Validation errors (new variants) -->
+    <string name="error_tai_below_one">台数は 1 以上である必要があります。</string>
+    <string name="error_tai_below_min">台数が必要最小値を下回っています。</string>
+    <string name="error_han_below_one">飜は 1 以上である必要があります。</string>
+    <string name="error_fu_below_min">符は 20 以上である必要があります。</string>
+    <string name="error_fu_invalid">無効な符の値です。</string>
+    <string name="error_input_type_mismatch">入力形式が点数ルールと一致しません。</string>
+    <string name="error_negative_count">数値は負にできません。</string>
+
+    <!-- Game Variants -->
+    <string name="variant_hong_kong_new">香港新ルール</string>
+    <string name="variant_taiwanese">台湾 16 枚麻雀</string>
+    <string name="variant_japanese_riichi">日本リーチ麻雀</string>
+    <string name="variant_hokkien">福建/ホッケン</string>
+    <string name="variant_shanghai">上海</string>
+    <string name="variant_sichuan">四川</string>
+    <string name="variant_singaporean">シンガポール</string>
+
+    <!-- Settings – Variant section -->
+    <string name="settings_variant_header">ゲーム種別</string>
+    <string name="settings_variant_change_title">種別を変更しますか？</string>
+    <string name="settings_variant_change_message">種別を変更すると局履歴がすべて消去されます。続行しますか？</string>
+    <string name="settings_variant_change_confirm">変更</string>
+
+    <!-- Labels (new variants) -->
+    <string name="label_tai_count">台数</string>
+    <string name="label_han">飜</string>
+    <string name="label_fu">符</string>
+    <string name="label_honba">本場</string>
+    <string name="label_riichi_sticks">場のリーチ棒</string>
+    <string name="label_flower_count">花牌数</string>
+    <string name="label_animal_count">動物牌数</string>
+    <string name="label_dealer">親</string>
+
+    <!-- Preview titles (new variants) -->
+    <string name="preview_title_self_draw_tai">%1$d台 ツモ</string>
+    <string name="preview_title_discard_tai">%1$d台 ロン</string>
+    <string name="preview_title_riichi_tsumo">%1$d飜 %2$d符 ツモ</string>
+    <string name="preview_title_riichi_ron">%1$d飜 %2$d符 ロン</string>
+    <string name="preview_stick_bonus">+%1$d ボーナス (リーチ棒)</string>
+
+    <!-- Logs (new variants) -->
+    <string name="logs_entry_self_draw_tai">%1$s — ツモ、%2$d台</string>
+    <string name="logs_entry_discard_tai">%1$s が %2$s からロン — %3$d台</string>
+    <string name="logs_entry_self_draw_riichi">%1$s — ツモ、%2$d飜 %3$d符</string>
+    <string name="logs_entry_discard_riichi">%1$s が %2$s からロン — %3$d飜 %4$d符</string>
+
+    <!-- Score Table – rules editor labels -->
+    <string name="rules_hk_discard_base">ロン基本点 (1翻)</string>
+    <string name="rules_hk_self_draw_base">ツモ基本点 (1翻)</string>
+    <string name="rules_hk_max_fan">最大翻数 (0 = 無制限)</string>
+    <string name="rules_hk_custom_self_draw_title">ツモ基本点を個別設定</string>
+    <string name="rules_hk_custom_self_draw_subtitle">ロン基本点の半分を自動適用せず個別に設定します</string>
+    <string name="rules_hk_self_draw_derived">ツモ基本点: %1$d (ロンの半分)</string>
+    <string name="rules_tw_base">基本支払い点</string>
+    <string name="rules_tw_per_tai">1台ごとの支払い点</string>
+    <string name="rules_tw_min_tai">最低台数</string>
+    <string name="rules_tw_self_draw_bonus_tai">ツモボーナス台</string>
+    <string name="rules_tw_dealer_multiplier">親倍率</string>
+    <string name="rules_hok_base">基本支払い点</string>
+    <string name="rules_hok_per_unit">単位ごとの支払い点</string>
+    <string name="rules_hok_max_units">最大単位 (0 = 無制限)</string>
+    <string name="rules_hok_dealer_doubles">親は支払い倍</string>
+    <string name="rules_ri_kiriage_mangan">切り上げ満貫</string>
+    <string name="rules_ri_honba_value">本場の値 (1本あたりの点数)</string>
+    <string name="rules_ri_stick_value">リーチ棒の値 (点)</string>
+    <string name="rules_sh_base">基本点 (1翻)</string>
+    <string name="rules_sh_max_fan">最大翻数</string>
+    <string name="rules_sg_flower_bonus">花牌ボーナス (1枚ごと)</string>
+    <string name="rules_sg_animal_bonus">動物牌ボーナス (1枚ごと)</string>
+
+    <!-- Score Table – column headers -->
+    <string name="score_table_col_tai">台</string>
+    <string name="score_table_col_payout">支払い</string>
+    <string name="score_table_col_han">飜</string>
+    <string name="score_table_col_non_dealer_ron">子ロン</string>
+    <string name="score_table_col_dealer_ron">親ロン</string>
+    <string name="score_table_riichi_reference">リーチ点数一覧</string>
+    <string name="score_table_col_non_dealer_tsumo">子ツモ</string>
+    <string name="score_table_col_dealer_tsumo">親ツモ</string>
+</resources>
