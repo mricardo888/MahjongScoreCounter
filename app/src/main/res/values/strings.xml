@@ -19,10 +19,10 @@
     <string name="label_round_winner">Winner</string>
     <string name="label_win_type">Win Type</string>
     <string name="label_fan_count">Points</string>
-    <string name="label_discarder">Payer</string>
+    <string name="label_discarder">Player</string>
     <string name="label_amount_self_draw">Each loser pays</string>
-    <string name="label_amount_discard">Payer pays</string>
-    <string name="label_payer">Payer</string>
+    <string name="label_amount_discard">Player pays</string>
+    <string name="label_payer">Player</string>
     <string name="label_required">Required</string>
     <string name="label_live_session">Live Session</string>
 
