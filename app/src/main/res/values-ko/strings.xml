@@ -12,19 +12,22 @@
     <string name="seat_north_short">북</string>
 
     <!-- Win types -->
-    <string name="win_type_self_draw">쯔모</string>
-    <string name="win_type_discard">론</string>
+    <string name="win_type_self_draw">자기 뽑기</string>
+    <string name="win_type_discard">버림패 승리</string>
 
     <!-- Main screen labels -->
-    <string name="label_round_winner">국 승자</string>
+    <string name="label_round_winner">승자</string>
     <string name="label_win_type">화료 방식</string>
-    <string name="label_fan_count">판 수</string>
-    <string name="label_discarder">방총자</string>
+    <string name="label_fan_count">점수</string>
+    <string name="label_discarder">지불자</string>
+    <string name="label_amount_self_draw">각 패자가 지불</string>
+    <string name="label_amount_discard">지불자가 지불</string>
+    <string name="label_payer">지불자</string>
     <string name="label_required">필수</string>
     <string name="label_live_session">진행 중인 게임</string>
 
     <!-- Actions -->
-    <string name="action_commit_round">국 기록</string>
+    <string name="action_commit_round">기록</string>
     <string name="action_undo">실행 취소</string>
     <string name="action_reset">초기화</string>
     <string name="action_save">저장</string>
@@ -35,7 +38,7 @@
     <string name="action_back">뒤로</string>
 
     <!-- Screen titles -->
-    <string name="title_main">점수판</string>
+    <string name="title_main">점수 기록</string>
     <string name="title_score_table">점수표</string>
     <string name="title_logs">국 기록</string>
     <string name="title_stats">플레이어 통계</string>
@@ -48,25 +51,30 @@
     <string name="nav_stats">통계</string>
 
     <!-- Preview / summary -->
-    <string name="preview_empty">승자를 선택해 국 미리보기를 확인하세요.</string>
-    <string name="preview_title_self_draw">%1$d판 쯔모</string>
-    <string name="preview_title_discard">%1$d판 론</string>
+    <string name="preview_empty">승자를 선택하고 점수를 입력하세요.</string>
+    <string name="preview_title_self_draw">자기 뽑기: 각 %1$d</string>
+    <string name="preview_title_discard">버림패 승리: %1$d</string>
     <string name="preview_row_pays">%1$s 지불</string>
     <string name="preview_row_gains">%1$s 획득</string>
-    <string name="preview_subtitle">현재 규칙 기준 계산</string>
+    <string name="preview_subtitle">예상 점수 변화</string>
 
     <!-- Validation errors -->
     <string name="error_no_winner">승자를 선택하세요.</string>
-    <string name="error_fan_below_one">판 수는 최소 1이어야 합니다.</string>
-    <string name="error_discarder_required">방총자를 선택하세요.</string>
-    <string name="error_discarder_forbidden_self_draw">쯔모에는 방총자가 없습니다.</string>
-    <string name="error_winner_is_discarder">승자와 방총자는 달라야 합니다.</string>
+    <string name="error_fan_below_one">점수는 0보다 커야 합니다.</string>
+    <string name="error_discarder_required">지불자를 선택하세요.</string>
+    <string name="error_discarder_forbidden_self_draw">자기 뽑기에는 지불자가 없습니다.</string>
+    <string name="error_winner_is_discarder">승자와 지불자는 달라야 합니다.</string>
+    <string name="error_amount_below_one">0보다 큰 점수를 입력하세요.</string>
+    <string name="error_payer_required">지불자를 선택하세요.</string>
+    <string name="error_payer_forbidden_self_draw">자기 뽑기에는 지불자가 없습니다.</string>
+    <string name="error_winner_is_payer">승자와 지불자는 달라야 합니다.</string>
     <string name="error_negative_base">기본 점수는 음수일 수 없습니다.</string>
 
     <!-- Logs -->
     <string name="logs_empty">아직 기록된 국이 없습니다.</string>
-    <string name="logs_entry_self_draw">%1$s — 쯔모, %2$d판</string>
-    <string name="logs_entry_discard">%1$s가 %2$s에게 론 — %3$d판</string>
+    <string name="recent_rounds_title">최근 국</string>
+    <string name="logs_entry_self_draw">%1$s 자기 뽑기, 각 %2$d</string>
+    <string name="logs_entry_discard">%1$s 승리, %2$s 지불 %3$d</string>
 
     <!-- Stats -->
     <string name="stats_empty">아직 국이 없습니다. 국을 기록하면 통계를 볼 수 있습니다.</string>

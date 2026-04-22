@@ -1,43 +1,52 @@
 package com.ricdev.mahjongscorecounter.logic
 
-import com.ricdev.mahjongscorecounter.logic.variants.HokkienEngine
-import com.ricdev.mahjongscorecounter.logic.variants.HongKongNewEngine
-import com.ricdev.mahjongscorecounter.logic.variants.RiichiEngine
-import com.ricdev.mahjongscorecounter.logic.variants.ShanghaiEngine
-import com.ricdev.mahjongscorecounter.logic.variants.SichuanEngine
-import com.ricdev.mahjongscorecounter.logic.variants.SingaporeanEngine
-import com.ricdev.mahjongscorecounter.logic.variants.TaiwaneseEngine
 import com.ricdev.mahjongscorecounter.model.CommittedRound
 import com.ricdev.mahjongscorecounter.model.RoundInput
 import com.ricdev.mahjongscorecounter.model.RoundResult
-import com.ricdev.mahjongscorecounter.model.ScoreRules
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.ValidationError
+import com.ricdev.mahjongscorecounter.model.WinType
 
 object ScoreEngine {
 
-    fun validate(input: RoundInput, rules: ScoreRules): ValidationError? = when (rules) {
-        is ScoreRules.HongKongNew -> HongKongNewEngine.validate(input, rules)
-        is ScoreRules.Taiwanese -> TaiwaneseEngine.validate(input, rules)
-        is ScoreRules.JapaneseRiichi -> RiichiEngine.validate(input, rules)
-        is ScoreRules.Hokkien -> HokkienEngine.validate(input, rules)
-        is ScoreRules.Shanghai -> ShanghaiEngine.validate(input, rules)
-        is ScoreRules.Sichuan -> SichuanEngine.validate(input, rules)
-        is ScoreRules.Singaporean -> SingaporeanEngine.validate(input, rules)
+    fun validate(input: RoundInput): ValidationError? {
+        if (input.amount <= 0) return ValidationError.AmountBelowOne
+
+        return when (input.winType) {
+            WinType.SELF_DRAW -> {
+                if (input.payer != null) ValidationError.PayerForbiddenForSelfDraw else null
+            }
+            WinType.DISCARD_WIN -> {
+                val payer = input.payer ?: return ValidationError.PayerRequired
+                if (payer == input.winner) ValidationError.WinnerIsPayer else null
+            }
+        }
     }
 
-    fun calculate(input: RoundInput, rules: ScoreRules): RoundResult {
-        val error = validate(input, rules)
+    fun calculate(input: RoundInput): RoundResult {
+        val error = validate(input)
         require(error == null) { "Invalid round input: $error" }
-        return when (rules) {
-            is ScoreRules.HongKongNew -> HongKongNewEngine.calculate(input as RoundInput.Fan, rules)
-            is ScoreRules.Taiwanese -> TaiwaneseEngine.calculate(input as RoundInput.Tai, rules)
-            is ScoreRules.JapaneseRiichi -> RiichiEngine.calculate(input as RoundInput.Riichi, rules)
-            is ScoreRules.Hokkien -> HokkienEngine.calculate(input as RoundInput.Tai, rules)
-            is ScoreRules.Shanghai -> ShanghaiEngine.calculate(input as RoundInput.Fan, rules)
-            is ScoreRules.Sichuan -> SichuanEngine.calculate(input as RoundInput.Fan, rules)
-            is ScoreRules.Singaporean -> SingaporeanEngine.calculate(input as RoundInput.Fan, rules)
+        val deltas = Seat.entries.associateWith { 0 }.toMutableMap()
+
+        when (input.winType) {
+            WinType.SELF_DRAW -> {
+                Seat.entries.filterNot { it == input.winner }.forEach { seat ->
+                    deltas[seat] = -input.amount
+                }
+                deltas[input.winner] = input.amount * (Seat.entries.size - 1)
+            }
+            WinType.DISCARD_WIN -> {
+                val payer = requireNotNull(input.payer)
+                deltas[payer] = -input.amount
+                deltas[input.winner] = input.amount
+            }
         }
+
+        return RoundResult(
+            deltas = deltas,
+            winner = input.winner,
+            winType = input.winType,
+        )
     }
 
     fun computeTotals(history: List<CommittedRound>): Map<Seat, Int> {
@@ -45,10 +54,6 @@ object ScoreEngine {
         history.forEach { round ->
             round.result.deltas.forEach { (seat, delta) ->
                 totals[seat] = (totals[seat] ?: 0) + delta
-            }
-            if (round.result.stickBonus != 0) {
-                val winner = round.result.winner
-                totals[winner] = (totals[winner] ?: 0) + round.result.stickBonus
             }
         }
         return totals.toMap()

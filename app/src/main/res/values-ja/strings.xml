@@ -12,19 +12,22 @@
     <string name="seat_north_short">北</string>
 
     <!-- Win types -->
-    <string name="win_type_self_draw">ツモ</string>
-    <string name="win_type_discard">ロン</string>
+    <string name="win_type_self_draw">自摸</string>
+    <string name="win_type_discard">捨て牌勝ち</string>
 
     <!-- Main screen labels -->
-    <string name="label_round_winner">局の勝者</string>
+    <string name="label_round_winner">勝者</string>
     <string name="label_win_type">和了方法</string>
-    <string name="label_fan_count">翻数</string>
-    <string name="label_discarder">放銃者</string>
+    <string name="label_fan_count">点数</string>
+    <string name="label_discarder">支払者</string>
+    <string name="label_amount_self_draw">各敗者が支払う</string>
+    <string name="label_amount_discard">支払者が支払う</string>
+    <string name="label_payer">支払者</string>
     <string name="label_required">必須</string>
     <string name="label_live_session">進行中の対局</string>
 
     <!-- Actions -->
-    <string name="action_commit_round">局を記録</string>
+    <string name="action_commit_round">記録</string>
     <string name="action_undo">元に戻す</string>
     <string name="action_reset">リセット</string>
     <string name="action_save">保存</string>
@@ -35,7 +38,7 @@
     <string name="action_back">戻る</string>
 
     <!-- Screen titles -->
-    <string name="title_main">スコアボード</string>
+    <string name="title_main">点数トラッカー</string>
     <string name="title_score_table">点数表</string>
     <string name="title_logs">局ログ</string>
     <string name="title_stats">プレイヤー統計</string>
@@ -48,25 +51,30 @@
     <string name="nav_stats">統計</string>
 
     <!-- Preview / summary -->
-    <string name="preview_empty">勝者を選択すると局のプレビューを表示します。</string>
-    <string name="preview_title_self_draw">%1$d翻 ツモ</string>
-    <string name="preview_title_discard">%1$d翻 ロン</string>
+    <string name="preview_empty">勝者を選択し、点数を入力してください。</string>
+    <string name="preview_title_self_draw">自摸: 各 %1$d</string>
+    <string name="preview_title_discard">捨て牌勝ち: %1$d</string>
     <string name="preview_row_pays">%1$s が支払う</string>
     <string name="preview_row_gains">%1$s が獲得</string>
-    <string name="preview_subtitle">現在のルールで計算</string>
+    <string name="preview_subtitle">予定される点数変化</string>
 
     <!-- Validation errors -->
     <string name="error_no_winner">勝者を選択してください。</string>
-    <string name="error_fan_below_one">翻数は 1 以上である必要があります。</string>
-    <string name="error_discarder_required">放銃者を選択してください。</string>
-    <string name="error_discarder_forbidden_self_draw">ツモに放銃者はありません。</string>
-    <string name="error_winner_is_discarder">勝者と放銃者は別である必要があります。</string>
+    <string name="error_fan_below_one">点数は 0 より大きくしてください。</string>
+    <string name="error_discarder_required">支払者を選択してください。</string>
+    <string name="error_discarder_forbidden_self_draw">自摸に支払者はありません。</string>
+    <string name="error_winner_is_discarder">勝者と支払者は別である必要があります。</string>
+    <string name="error_amount_below_one">0 より大きい点数を入力してください。</string>
+    <string name="error_payer_required">支払者を選択してください。</string>
+    <string name="error_payer_forbidden_self_draw">自摸に支払者はありません。</string>
+    <string name="error_winner_is_payer">勝者と支払者は別である必要があります。</string>
     <string name="error_negative_base">基本点は 0 以上である必要があります。</string>
 
     <!-- Logs -->
     <string name="logs_empty">まだ記録された局はありません。</string>
-    <string name="logs_entry_self_draw">%1$s — ツモ、%2$d翻</string>
-    <string name="logs_entry_discard">%1$s が %2$s からロン — %3$d翻</string>
+    <string name="recent_rounds_title">最近の局</string>
+    <string name="logs_entry_self_draw">%1$s 自摸、各 %2$d</string>
+    <string name="logs_entry_discard">%1$s 勝ち、%2$s が %3$d 支払い</string>
 
     <!-- Stats -->
     <string name="stats_empty">まだ局がありません。局を記録すると統計を表示できます。</string>

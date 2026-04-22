@@ -13,18 +13,21 @@
 
     <!-- Win types -->
     <string name="win_type_self_draw">自摸</string>
-    <string name="win_type_discard">放槍</string>
+    <string name="win_type_discard">吃牌胡</string>
 
     <!-- Main screen labels -->
-    <string name="label_round_winner">本局贏家</string>
+    <string name="label_round_winner">贏家</string>
     <string name="label_win_type">胡牌方式</string>
-    <string name="label_fan_count">番數</string>
-    <string name="label_discarder">放槍者</string>
+    <string name="label_fan_count">點數</string>
+    <string name="label_discarder">付款者</string>
+    <string name="label_amount_self_draw">每位輸家付款</string>
+    <string name="label_amount_discard">付款者付款</string>
+    <string name="label_payer">付款者</string>
     <string name="label_required">必填</string>
     <string name="label_live_session">目前牌局</string>
 
     <!-- Actions -->
-    <string name="action_commit_round">確認本局</string>
+    <string name="action_commit_round">記錄</string>
     <string name="action_undo">還原</string>
     <string name="action_reset">重設</string>
     <string name="action_save">儲存</string>
@@ -35,7 +38,7 @@
     <string name="action_back">返回</string>
 
     <!-- Screen titles -->
-    <string name="title_main">計分板</string>
+    <string name="title_main">分數記錄</string>
     <string name="title_score_table">分數表</string>
     <string name="title_logs">對局紀錄</string>
     <string name="title_stats">玩家統計</string>
@@ -48,25 +51,30 @@
     <string name="nav_stats">統計</string>
 
     <!-- Preview / summary -->
-    <string name="preview_empty">選擇贏家以預覽本局。</string>
-    <string name="preview_title_self_draw">%1$d 番自摸</string>
-    <string name="preview_title_discard">%1$d 番放槍</string>
+    <string name="preview_empty">選擇贏家並輸入點數。</string>
+    <string name="preview_title_self_draw">自摸：每位 %1$d</string>
+    <string name="preview_title_discard">吃牌胡：%1$d</string>
     <string name="preview_row_pays">%1$s 支付</string>
     <string name="preview_row_gains">%1$s 得分</string>
-    <string name="preview_subtitle">依目前規則計算</string>
+    <string name="preview_subtitle">預計分數變化</string>
 
     <!-- Validation errors -->
     <string name="error_no_winner">請選擇贏家。</string>
-    <string name="error_fan_below_one">番數最少為 1。</string>
-    <string name="error_discarder_required">請選擇放槍者。</string>
-    <string name="error_discarder_forbidden_self_draw">自摸不會有放槍者。</string>
-    <string name="error_winner_is_discarder">贏家與放槍者不能相同。</string>
+    <string name="error_fan_below_one">點數必須大於 0。</string>
+    <string name="error_discarder_required">請選擇付款者。</string>
+    <string name="error_discarder_forbidden_self_draw">自摸不能有付款者。</string>
+    <string name="error_winner_is_discarder">贏家與付款者不能相同。</string>
+    <string name="error_amount_below_one">請輸入大於 0 的點數。</string>
+    <string name="error_payer_required">請選擇付款者。</string>
+    <string name="error_payer_forbidden_self_draw">自摸不能有付款者。</string>
+    <string name="error_winner_is_payer">贏家與付款者不能相同。</string>
     <string name="error_negative_base">底分不能為負數。</string>
 
     <!-- Logs -->
     <string name="logs_empty">尚無對局紀錄。</string>
-    <string name="logs_entry_self_draw">%1$s — 自摸 %2$d 番</string>
-    <string name="logs_entry_discard">%1$s 胡 %2$s 放槍 — %3$d 番</string>
+    <string name="recent_rounds_title">最近記錄</string>
+    <string name="logs_entry_self_draw">%1$s 自摸，每位 %2$d</string>
+    <string name="logs_entry_discard">%1$s 胡 %2$s，%3$d</string>
 
     <!-- Stats -->
     <string name="stats_empty">尚無對局。完成一局後即可查看統計。</string>

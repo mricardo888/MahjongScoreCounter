@@ -75,19 +75,9 @@ private fun ValidPreview(input: RoundInput, result: RoundResult, modifier: Modif
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            val title = when (input) {
-                is RoundInput.Fan -> when (input.winType) {
-                    WinType.SELF_DRAW -> stringResource(R.string.preview_title_self_draw, input.fanCount)
-                    WinType.DISCARD_WIN -> stringResource(R.string.preview_title_discard, input.fanCount)
-                }
-                is RoundInput.Tai -> when (input.winType) {
-                    WinType.SELF_DRAW -> stringResource(R.string.preview_title_self_draw_tai, input.taiCount)
-                    WinType.DISCARD_WIN -> stringResource(R.string.preview_title_discard_tai, input.taiCount)
-                }
-                is RoundInput.Riichi -> when (input.winType) {
-                    WinType.SELF_DRAW -> stringResource(R.string.preview_title_riichi_tsumo, input.han, input.fu)
-                    WinType.DISCARD_WIN -> stringResource(R.string.preview_title_riichi_ron, input.han, input.fu)
-                }
+            val title = when (input.winType) {
+                WinType.SELF_DRAW -> stringResource(R.string.preview_title_self_draw, input.amount)
+                WinType.DISCARD_WIN -> stringResource(R.string.preview_title_discard, input.amount)
             }
             Text(
                 text = title,
@@ -104,19 +94,12 @@ private fun ValidPreview(input: RoundInput, result: RoundResult, modifier: Modif
                 if (delta == 0) return@forEach
                 DeltaRow(seat = seat, delta = delta)
             }
-            if (result.stickBonus != 0) {
-                Text(
-                    text = stringResource(R.string.preview_stick_bonus, result.stickBonus),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = DeltaPositive,
-                )
-            }
         }
     }
 }
 
 @Composable
-private fun DeltaRow(seat: Seat, delta: Int) {
+internal fun DeltaRow(seat: Seat, delta: Int) {
     val color: Color = when {
         delta > 0 -> DeltaPositive
         delta < 0 -> DeltaNegative
@@ -147,19 +130,10 @@ internal fun Seat.labelResId(): Int = when (this) {
 }
 
 internal fun ValidationError.toResId(): Int = when (this) {
-    ValidationError.NoWinner -> R.string.error_no_winner
-    ValidationError.FanBelowOne -> R.string.error_fan_below_one
-    ValidationError.DiscarderRequired -> R.string.error_discarder_required
-    ValidationError.DiscarderForbiddenForSelfDraw -> R.string.error_discarder_forbidden_self_draw
-    ValidationError.WinnerIsDiscarder -> R.string.error_winner_is_discarder
-    ValidationError.NegativeBase -> R.string.error_negative_base
-    ValidationError.TaiBelowOne -> R.string.error_tai_below_one
-    ValidationError.TaiBelowMin -> R.string.error_tai_below_min
-    ValidationError.HanBelowOne -> R.string.error_han_below_one
-    ValidationError.FuBelowMin -> R.string.error_fu_below_min
-    ValidationError.FuInvalid -> R.string.error_fu_invalid
-    ValidationError.InputTypeMismatch -> R.string.error_input_type_mismatch
-    ValidationError.NegativeCount -> R.string.error_negative_count
+    ValidationError.AmountBelowOne -> R.string.error_amount_below_one
+    ValidationError.PayerRequired -> R.string.error_payer_required
+    ValidationError.PayerForbiddenForSelfDraw -> R.string.error_payer_forbidden_self_draw
+    ValidationError.WinnerIsPayer -> R.string.error_winner_is_payer
 }
 
 @Preview(showBackground = true, widthDp = 360)
@@ -175,7 +149,7 @@ private fun CalculationSummaryEmptyPreview() {
 private fun CalculationSummaryInvalidPreview() {
     MahjongScoreCounterTheme {
         CalculationSummary(
-            state = PreviewState.Invalid(ValidationError.DiscarderRequired),
+            state = PreviewState.Invalid(ValidationError.PayerRequired),
         )
     }
 }
@@ -186,10 +160,10 @@ private fun CalculationSummaryValidPreview() {
     MahjongScoreCounterTheme {
         CalculationSummary(
             state = PreviewState.Valid(
-                input = RoundInput.Fan(
+                input = RoundInput(
                     winner = Seat.EAST,
                     winType = WinType.SELF_DRAW,
-                    fanCount = 3,
+                    amount = 3,
                 ),
                 result = RoundResult(
                     deltas = mapOf(

@@ -2,8 +2,6 @@ package com.ricdev.mahjongscorecounter.viewmodel
 
 import com.ricdev.mahjongscorecounter.data.GameRepository
 import com.ricdev.mahjongscorecounter.model.CommittedRound
-import com.ricdev.mahjongscorecounter.model.MahjongVariant
-import com.ricdev.mahjongscorecounter.model.ScoreRules
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.ThemeMode
 import com.ricdev.mahjongscorecounter.model.WinType
@@ -13,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -46,338 +45,218 @@ class GameViewModelTest {
         Dispatchers.resetMain()
     }
 
-    // ─── HK New (Fan) ────────────────────────────────────────────────────────
+    @Test
+    fun `default form starts empty with zero totals`() = runTest {
+        val form = viewModel.formState.first()
+        val state = viewModel.gameState.first()
+
+        assertNull(form.winner)
+        assertEquals(WinType.SELF_DRAW, form.winType)
+        assertNull(form.payer)
+        assertEquals(0, form.amount)
+        Seat.entries.forEach { seat ->
+            assertEquals(0, state.totals[seat])
+        }
+        assertTrue(viewModel.preview.first() is PreviewState.Empty)
+    }
 
     @Test
-    fun `commit then undo round-trips totals and history`() = runTest {
+    fun `changing win type to self draw clears payer`() = runTest {
         viewModel.selectWinner(Seat.EAST)
+        viewModel.selectWinType(WinType.DISCARD_WIN)
+        viewModel.selectPayer(Seat.SOUTH)
+
+        assertEquals(Seat.SOUTH, viewModel.formState.first().payer)
+
         viewModel.selectWinType(WinType.SELF_DRAW)
-        viewModel.setFan(3)
+
+        assertNull(viewModel.formState.first().payer)
+    }
+
+    @Test
+    fun `changing winner clears matching payer`() = runTest {
+        viewModel.selectWinner(Seat.EAST)
+        viewModel.selectWinType(WinType.DISCARD_WIN)
+        viewModel.selectPayer(Seat.SOUTH)
+
+        viewModel.selectWinner(Seat.SOUTH)
+
+        assertNull(viewModel.formState.first().payer)
+    }
+
+    @Test
+    fun `preview becomes valid when self draw has winner and amount`() = runTest {
+        viewModel.selectWinner(Seat.EAST)
+        viewModel.setAmount(4)
+        advanceUntilIdle()
+
+        val preview = viewModel.preview.first()
+
+        assertTrue(preview is PreviewState.Valid)
+    }
+
+    @Test
+    fun `preview is invalid when amount is missing`() = runTest {
+        viewModel.selectWinner(Seat.EAST)
+        advanceUntilIdle()
+
+        assertTrue(viewModel.preview.first() is PreviewState.Invalid)
+    }
+
+    @Test
+    fun `preview is invalid when discard win missing payer`() = runTest {
+        viewModel.selectWinner(Seat.EAST)
+        viewModel.selectWinType(WinType.DISCARD_WIN)
+        viewModel.setAmount(5)
+        advanceUntilIdle()
+
+        assertTrue(viewModel.preview.first() is PreviewState.Invalid)
+    }
+
+    @Test
+    fun `self draw commit updates totals and history`() = runTest {
+        viewModel.selectWinner(Seat.EAST)
+        viewModel.setAmount(3)
         advanceUntilIdle()
 
         viewModel.commitRound()
         advanceUntilIdle()
 
-        val afterCommit = viewModel.gameState.first()
-        assertEquals(1, afterCommit.history.size)
-        // HKNew defaults: selfDrawBase=1, discardBase=2; fan=3 → perLoser = 1*3 = 3, EAST gains 3*3 = 9
-        assertEquals(9, afterCommit.totals[Seat.EAST])
-        assertEquals(-3, afterCommit.totals[Seat.SOUTH])
+        val state = viewModel.gameState.first()
+        assertEquals(1, state.history.size)
+        assertEquals(9, state.totals[Seat.EAST])
+        assertEquals(-3, state.totals[Seat.SOUTH])
+        assertEquals(-3, state.totals[Seat.WEST])
+        assertEquals(-3, state.totals[Seat.NORTH])
+    }
+
+    @Test
+    fun `discard commit updates payer and winner only`() = runTest {
+        viewModel.selectWinner(Seat.WEST)
+        viewModel.selectWinType(WinType.DISCARD_WIN)
+        viewModel.selectPayer(Seat.SOUTH)
+        viewModel.setAmount(8)
+        advanceUntilIdle()
+
+        viewModel.commitRound()
+        advanceUntilIdle()
+
+        val state = viewModel.gameState.first()
+        assertEquals(1, state.history.size)
+        assertEquals(8, state.totals[Seat.WEST])
+        assertEquals(-8, state.totals[Seat.SOUTH])
+        assertEquals(0, state.totals[Seat.EAST])
+        assertEquals(0, state.totals[Seat.NORTH])
+    }
+
+    @Test
+    fun `commit resets amount and payer while preserving winner and win type`() = runTest {
+        viewModel.selectWinner(Seat.WEST)
+        viewModel.selectWinType(WinType.DISCARD_WIN)
+        viewModel.selectPayer(Seat.NORTH)
+        viewModel.setAmount(7)
+        advanceUntilIdle()
+
+        viewModel.commitRound()
+        advanceUntilIdle()
+
+        val form = viewModel.formState.first()
+        assertEquals(Seat.WEST, form.winner)
+        assertEquals(WinType.DISCARD_WIN, form.winType)
+        assertEquals(0, form.amount)
+        assertNull(form.payer)
+    }
+
+    @Test
+    fun `commitRound with invalid preview is a no-op`() = runTest {
+        viewModel.selectWinner(Seat.EAST)
+        advanceUntilIdle()
+
+        viewModel.commitRound()
+        advanceUntilIdle()
+
+        assertEquals(0, viewModel.gameState.first().history.size)
+    }
+
+    @Test
+    fun `totals accumulate across committed rounds`() = runTest {
+        commitSelfDraw(winner = Seat.EAST, amount = 2)
+        commitDiscard(winner = Seat.SOUTH, payer = Seat.EAST, amount = 5)
+
+        val state = viewModel.gameState.first()
+
+        assertEquals(2, state.history.size)
+        assertEquals(1, state.totals[Seat.EAST])
+        assertEquals(3, state.totals[Seat.SOUTH])
+        assertEquals(-2, state.totals[Seat.WEST])
+        assertEquals(-2, state.totals[Seat.NORTH])
+    }
+
+    @Test
+    fun `undo last round restores expected totals and history`() = runTest {
+        commitSelfDraw(winner = Seat.EAST, amount = 2)
+        commitDiscard(winner = Seat.SOUTH, payer = Seat.EAST, amount = 5)
 
         viewModel.undoLast()
         advanceUntilIdle()
 
-        val afterUndo = viewModel.gameState.first()
-        assertEquals(0, afterUndo.history.size)
-        Seat.entries.forEach { seat ->
-            assertEquals(0, afterUndo.totals[seat])
-        }
-    }
-
-    @Test
-    fun `selectWinType SELF_DRAW clears previously set discarder`() = runTest {
-        viewModel.selectWinner(Seat.EAST)
-        viewModel.selectWinType(WinType.DISCARD_WIN)
-        viewModel.selectDiscarder(Seat.SOUTH)
-        assertEquals(Seat.SOUTH, viewModel.formState.first().discarder)
-
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        assertNull(viewModel.formState.first().discarder)
-    }
-
-    @Test
-    fun `commitRound with valid form resets fan and clears discarder, keeping winner`() =
-        runTest {
-            viewModel.selectWinner(Seat.WEST)
-            viewModel.selectWinType(WinType.DISCARD_WIN)
-            viewModel.selectDiscarder(Seat.NORTH)
-            viewModel.setFan(5)
-            advanceUntilIdle()
-
-            viewModel.commitRound()
-            advanceUntilIdle()
-
-            val form = viewModel.formState.first() as FormState.Fan
-            assertEquals(Seat.WEST, form.winner)
-            assertEquals(1, form.fanCount)
-            assertNull(form.discarder)
-
-            val state = viewModel.gameState.first()
-            assertEquals(1, state.history.size)
-        }
-
-    @Test
-    fun `commitRound with invalid preview is a no-op`() = runTest {
-        // no winner selected → preview is Empty
-        viewModel.setFan(3)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
         val state = viewModel.gameState.first()
-        assertEquals(0, state.history.size)
+        assertEquals(1, state.history.size)
+        assertEquals(6, state.totals[Seat.EAST])
+        assertEquals(-2, state.totals[Seat.SOUTH])
+        assertEquals(-2, state.totals[Seat.WEST])
+        assertEquals(-2, state.totals[Seat.NORTH])
     }
 
     @Test
-    fun `setFan clamps outside 1-20`() = runTest {
-        viewModel.setFan(0)
-        assertEquals(1, (viewModel.formState.first() as FormState.Fan).fanCount)
-        viewModel.setFan(50)
-        assertEquals(20, (viewModel.formState.first() as FormState.Fan).fanCount)
-    }
-
-    @Test
-    fun `preview becomes Valid when winner selected for self draw`() = runTest {
-        assertTrue(viewModel.preview.first() is PreviewState.Empty)
-        viewModel.selectWinner(Seat.EAST)
-        advanceUntilIdle()
-        assertTrue(viewModel.preview.first() is PreviewState.Valid)
-    }
-
-    @Test
-    fun `preview is Invalid when discard win missing discarder`() = runTest {
-        viewModel.selectWinner(Seat.EAST)
-        viewModel.selectWinType(WinType.DISCARD_WIN)
-        advanceUntilIdle()
-        val preview = viewModel.preview.first()
-        assertTrue(preview is PreviewState.Invalid)
-    }
-
-    @Test
-    fun `resetGame clears history and form`() = runTest {
-        viewModel.selectWinner(Seat.EAST)
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
+    fun `reset clears history totals and form`() = runTest {
+        commitSelfDraw(winner = Seat.EAST, amount = 2)
         assertFalse(viewModel.gameState.first().history.isEmpty())
 
         viewModel.resetGame()
         advanceUntilIdle()
 
-        assertEquals(0, viewModel.gameState.first().history.size)
-        assertNull(viewModel.formState.first().winner)
-    }
-
-    // ─── Variant switching ────────────────────────────────────────────────────
-
-    @Test
-    fun `changeVariant to Taiwanese switches FormState to Tai`() = runTest {
-        viewModel.changeVariant(MahjongVariant.TAIWANESE)
-        advanceUntilIdle()
-
-        assertTrue(viewModel.formState.first() is FormState.Tai)
-        val rules = viewModel.currentRules()
-        assertTrue(rules is ScoreRules.Taiwanese)
-    }
-
-    @Test
-    fun `changeVariant to JapaneseRiichi switches FormState to Riichi`() = runTest {
-        viewModel.changeVariant(MahjongVariant.JAPANESE_RIICHI)
-        advanceUntilIdle()
-
-        assertTrue(viewModel.formState.first() is FormState.Riichi)
-        val rules = viewModel.currentRules()
-        assertTrue(rules is ScoreRules.JapaneseRiichi)
-    }
-
-    @Test
-    fun `changeVariant clears history`() = runTest {
-        // commit a round first
-        viewModel.selectWinner(Seat.EAST)
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
-        assertEquals(1, viewModel.gameState.first().history.size)
-
-        viewModel.changeVariant(MahjongVariant.TAIWANESE)
-        advanceUntilIdle()
-
-        assertEquals(0, viewModel.gameState.first().history.size)
-    }
-
-    @Test
-    fun `changeVariant to same variant is a no-op`() = runTest {
-        viewModel.selectWinner(Seat.EAST)
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
-        assertEquals(1, viewModel.gameState.first().history.size)
-
-        // changing to same variant should not clear history
-        viewModel.changeVariant(MahjongVariant.HONG_KONG_NEW)
-        advanceUntilIdle()
-
-        assertEquals(1, viewModel.gameState.first().history.size)
-    }
-
-    // ─── Dealer rotation ─────────────────────────────────────────────────────
-
-    @Test
-    fun `non-dealer Fan win does not rotate dealer`() = runTest {
-        // FAN variant has no dealer rotation
-        assertEquals(Seat.EAST, viewModel.gameState.first().dealer)
-        viewModel.selectWinner(Seat.SOUTH) // non-dealer wins
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
-
-        assertEquals(Seat.EAST, viewModel.gameState.first().dealer)
-    }
-
-    @Test
-    fun `non-dealer Tai win rotates dealer`() = runTest {
-        viewModel.changeVariant(MahjongVariant.TAIWANESE)
-        advanceUntilIdle()
-
-        assertEquals(Seat.EAST, viewModel.gameState.first().dealer)
-
-        viewModel.selectWinner(Seat.SOUTH) // non-dealer (SOUTH) wins
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        viewModel.setTai(5)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
-
-        assertEquals(Seat.SOUTH, viewModel.gameState.first().dealer)
-    }
-
-    @Test
-    fun `dealer Tai win does not rotate dealer`() = runTest {
-        viewModel.changeVariant(MahjongVariant.TAIWANESE)
-        advanceUntilIdle()
-
-        viewModel.selectWinner(Seat.EAST) // dealer (EAST) wins
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        viewModel.setTai(5)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
-
-        assertEquals(Seat.EAST, viewModel.gameState.first().dealer)
-    }
-
-    @Test
-    fun `Riichi non-dealer win rotates dealer and resets honba`() = runTest {
-        viewModel.changeVariant(MahjongVariant.JAPANESE_RIICHI)
-        advanceUntilIdle()
-        viewModel.setHonba(2)
-        advanceUntilIdle()
-
-        viewModel.selectWinner(Seat.SOUTH)
-        viewModel.selectWinType(WinType.SELF_DRAW)
-        viewModel.setHan(3)
-        viewModel.setFu(30)
-        advanceUntilIdle()
-        viewModel.commitRound()
-        advanceUntilIdle()
-
         val state = viewModel.gameState.first()
-        assertEquals(Seat.SOUTH, state.dealer)
-        assertEquals(0, state.honbaCount)
-        assertEquals(0, state.riichiSticksOnTable)
+        val form = viewModel.formState.first()
+        assertEquals(0, state.history.size)
+        Seat.entries.forEach { seat ->
+            assertEquals(0, state.totals[seat])
+        }
+        assertNull(form.winner)
+        assertEquals(WinType.SELF_DRAW, form.winType)
+        assertEquals(0, form.amount)
+        assertNull(form.payer)
     }
 
-    @Test
-    fun `Riichi dealer win increments honba and keeps dealer`() = runTest {
-        viewModel.changeVariant(MahjongVariant.JAPANESE_RIICHI)
-        advanceUntilIdle()
-
-        viewModel.selectWinner(Seat.EAST) // dealer wins
+    private fun TestScope.commitSelfDraw(winner: Seat, amount: Int) {
+        viewModel.selectWinner(winner)
         viewModel.selectWinType(WinType.SELF_DRAW)
-        viewModel.setHan(3)
-        viewModel.setFu(30)
+        viewModel.setAmount(amount)
         advanceUntilIdle()
         viewModel.commitRound()
         advanceUntilIdle()
-
-        val state = viewModel.gameState.first()
-        assertEquals(Seat.EAST, state.dealer)
-        assertEquals(1, state.honbaCount)
     }
 
-    // ─── Tai setters ─────────────────────────────────────────────────────────
-
-    @Test
-    fun `setTai clamps outside 1-30`() = runTest {
-        viewModel.changeVariant(MahjongVariant.TAIWANESE)
+    private fun TestScope.commitDiscard(winner: Seat, payer: Seat, amount: Int) {
+        viewModel.selectWinner(winner)
+        viewModel.selectWinType(WinType.DISCARD_WIN)
+        viewModel.selectPayer(payer)
+        viewModel.setAmount(amount)
         advanceUntilIdle()
-
-        viewModel.setTai(0)
-        assertEquals(1, (viewModel.formState.first() as FormState.Tai).taiCount)
-        viewModel.setTai(100)
-        assertEquals(30, (viewModel.formState.first() as FormState.Tai).taiCount)
-    }
-
-    // ─── Riichi setters ───────────────────────────────────────────────────────
-
-    @Test
-    fun `setHan clamps outside 1-13`() = runTest {
-        viewModel.changeVariant(MahjongVariant.JAPANESE_RIICHI)
+        viewModel.commitRound()
         advanceUntilIdle()
-
-        viewModel.setHan(0)
-        assertEquals(1, (viewModel.formState.first() as FormState.Riichi).han)
-        viewModel.setHan(20)
-        assertEquals(13, (viewModel.formState.first() as FormState.Riichi).han)
-    }
-
-    @Test
-    fun `declareRiichi increments riichi sticks for Riichi variant`() = runTest {
-        viewModel.changeVariant(MahjongVariant.JAPANESE_RIICHI)
-        advanceUntilIdle()
-
-        assertEquals(0, viewModel.gameState.first().riichiSticksOnTable)
-        viewModel.declareRiichi(Seat.SOUTH)
-        advanceUntilIdle()
-        assertEquals(1, viewModel.gameState.first().riichiSticksOnTable)
-    }
-
-    @Test
-    fun `declareRiichi is no-op for non-Riichi variant`() = runTest {
-        // Default is HK New
-        viewModel.declareRiichi(Seat.SOUTH)
-        advanceUntilIdle()
-        assertEquals(0, viewModel.gameState.first().riichiSticksOnTable)
     }
 }
 
-/** In-memory fake that bypasses DataStore. */
 private class FakeGameRepository : GameRepository(dataStore = StubDataStore) {
-    private val rules = MutableStateFlow<ScoreRules>(ScoreRules.HongKongNew())
     private val history = MutableStateFlow<List<CommittedRound>>(emptyList())
     private val themeMode = MutableStateFlow(ThemeMode.SYSTEM)
-    private val dealer = MutableStateFlow(Seat.EAST)
-    private val honba = MutableStateFlow(0)
-    private val riichiSticks = MutableStateFlow(0)
 
-    override val rulesFlow: Flow<ScoreRules> = rules
     override val historyFlow: Flow<List<CommittedRound>> = history
     override val themeModeFlow: Flow<ThemeMode> = themeMode
-    override val dealerFlow: Flow<Seat> = dealer
-    override val honbaFlow: Flow<Int> = honba
-    override val riichiSticksFlow: Flow<Int> = riichiSticks
-
-    override suspend fun updateRules(rules: ScoreRules) {
-        this.rules.value = rules
-    }
 
     override suspend fun updateThemeMode(mode: ThemeMode) {
         themeMode.value = mode
-    }
-
-    override suspend fun updateDealer(seat: Seat) {
-        dealer.value = seat
-    }
-
-    override suspend fun updateHonba(count: Int) {
-        honba.value = count.coerceAtLeast(0)
-    }
-
-    override suspend fun updateRiichiSticks(count: Int) {
-        riichiSticks.value = count.coerceAtLeast(0)
     }
 
     override suspend fun appendRound(round: CommittedRound) {
@@ -393,8 +272,6 @@ private class FakeGameRepository : GameRepository(dataStore = StubDataStore) {
 
     override suspend fun clearHistory() {
         history.value = emptyList()
-        honba.value = 0
-        riichiSticks.value = 0
     }
 }
 

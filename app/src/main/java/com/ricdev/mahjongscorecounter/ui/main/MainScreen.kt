@@ -1,6 +1,8 @@
 package com.ricdev.mahjongscorecounter.ui.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -9,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,11 +27,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ricdev.mahjongscorecounter.R
+import com.ricdev.mahjongscorecounter.model.CommittedRound
+import com.ricdev.mahjongscorecounter.model.Seat
+import com.ricdev.mahjongscorecounter.model.WinType
+import com.ricdev.mahjongscorecounter.ui.theme.DeltaNegative
+import com.ricdev.mahjongscorecounter.ui.theme.DeltaNeutral
+import com.ricdev.mahjongscorecounter.ui.theme.DeltaPositive
 import com.ricdev.mahjongscorecounter.viewmodel.GameViewModel
 import com.ricdev.mahjongscorecounter.viewmodel.PreviewState
+import java.text.DateFormat
+import java.util.Date
 
 @Composable
 fun MainScreen(
@@ -59,16 +73,10 @@ fun MainScreen(
 
         RoundEntryForm(
             form = form,
-            rules = gameState.rules,
             onWinnerSelected = viewModel::selectWinner,
             onWinTypeSelected = viewModel::selectWinType,
-            onFanChange = viewModel::setFan,
-            onFlowerChange = viewModel::setFlowerCount,
-            onAnimalChange = viewModel::setAnimalCount,
-            onTaiChange = viewModel::setTai,
-            onHanChange = viewModel::setHan,
-            onFuChange = viewModel::setFu,
-            onDiscarderSelected = viewModel::selectDiscarder,
+            onAmountChange = viewModel::setAmount,
+            onPayerSelected = viewModel::selectPayer,
         )
 
         CalculationSummary(state = preview)
@@ -98,6 +106,8 @@ fun MainScreen(
                 Text(stringResource(R.string.action_reset))
             }
         }
+
+        RecentRounds(history = gameState.history)
     }
 
     if (showResetDialog) {
@@ -118,6 +128,110 @@ fun MainScreen(
                     Text(stringResource(R.string.action_cancel))
                 }
             },
+        )
+    }
+}
+
+@Composable
+private fun RecentRounds(history: List<CommittedRound>) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            text = stringResource(R.string.recent_rounds_title),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        if (history.isEmpty()) {
+            Text(
+                text = stringResource(R.string.logs_empty),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        } else {
+            history.takeLast(5).asReversed().forEach { round ->
+                RecentRoundCard(round = round)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecentRoundCard(round: CommittedRound) {
+    val timeFormatter = remember { DateFormat.getTimeInstance(DateFormat.SHORT) }
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = timeFormatter.format(Date(round.timestampMillis)),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            val winnerLabel = stringResource(round.input.winner.labelResId())
+            val title = when (round.input.winType) {
+                WinType.SELF_DRAW -> stringResource(
+                    R.string.logs_entry_self_draw,
+                    winnerLabel,
+                    round.input.amount,
+                )
+                WinType.DISCARD_WIN -> {
+                    val payerLabel = stringResource(
+                        (round.input.payer ?: round.input.winner).labelResId()
+                    )
+                    stringResource(
+                        R.string.logs_entry_discard,
+                        winnerLabel,
+                        payerLabel,
+                        round.input.amount,
+                    )
+                }
+            }
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Seat.entries.chunked(2).forEach { rowSeats ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        rowSeats.forEach { seat ->
+                            val delta = round.result.deltas[seat] ?: 0
+                            DeltaChip(
+                                seat = seat,
+                                delta = delta,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DeltaChip(
+    seat: Seat,
+    delta: Int,
+    modifier: Modifier = Modifier,
+) {
+    val color: Color = when {
+        delta > 0 -> DeltaPositive
+        delta < 0 -> DeltaNegative
+        else -> DeltaNeutral
+    }
+    val sign = if (delta > 0) "+" else ""
+    Box(
+        modifier = modifier
+            .background(color.copy(alpha = 0.15f), shape = RoundedCornerShape(8.dp))
+            .padding(horizontal = 10.dp, vertical = 6.dp),
+    ) {
+        Text(
+            text = "${stringResource(seat.labelResId())} $sign$delta",
+            style = MaterialTheme.typography.labelLarge,
+            color = color,
         )
     }
 }

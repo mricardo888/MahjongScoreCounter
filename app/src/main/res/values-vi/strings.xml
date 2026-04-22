@@ -12,19 +12,22 @@
     <string name="seat_north_short">B</string>
 
     <!-- Win types -->
-    <string name="win_type_self_draw">Tự mỗ</string>
-    <string name="win_type_discard">Ăn từ bỏ</string>
+    <string name="win_type_self_draw">Tự bốc</string>
+    <string name="win_type_discard">Thắng từ bỏ bài</string>
 
     <!-- Main screen labels -->
-    <string name="label_round_winner">Người thắng ván</string>
+    <string name="label_round_winner">Người thắng</string>
     <string name="label_win_type">Kiểu thắng</string>
-    <string name="label_fan_count">Số fan</string>
-    <string name="label_discarder">Người bỏ bài</string>
+    <string name="label_fan_count">Điểm</string>
+    <string name="label_discarder">Người trả</string>
+    <string name="label_amount_self_draw">Mỗi người thua trả</string>
+    <string name="label_amount_discard">Người trả trả</string>
+    <string name="label_payer">Người trả</string>
     <string name="label_required">Bắt buộc</string>
     <string name="label_live_session">Ván đang chơi</string>
 
     <!-- Actions -->
-    <string name="action_commit_round">Lưu ván</string>
+    <string name="action_commit_round">Ghi</string>
     <string name="action_undo">Hoàn tác</string>
     <string name="action_reset">Đặt lại</string>
     <string name="action_save">Lưu</string>
@@ -35,7 +38,7 @@
     <string name="action_back">Quay lại</string>
 
     <!-- Screen titles -->
-    <string name="title_main">Bảng điểm</string>
+    <string name="title_main">Theo dõi điểm</string>
     <string name="title_score_table">Bảng tính điểm</string>
     <string name="title_logs">Nhật ký ván</string>
     <string name="title_stats">Thống kê người chơi</string>
@@ -48,25 +51,30 @@
     <string name="nav_stats">Thống kê</string>
 
     <!-- Preview / summary -->
-    <string name="preview_empty">Chọn người thắng để xem trước ván.</string>
-    <string name="preview_title_self_draw">Tự mỗ %1$d fan</string>
-    <string name="preview_title_discard">Thắng do bỏ bài %1$d fan</string>
+    <string name="preview_empty">Chọn người thắng và nhập điểm.</string>
+    <string name="preview_title_self_draw">Tự bốc: mỗi người %1$d</string>
+    <string name="preview_title_discard">Thắng từ bỏ bài: %1$d</string>
     <string name="preview_row_pays">%1$s trả</string>
     <string name="preview_row_gains">%1$s nhận</string>
-    <string name="preview_subtitle">Tính theo luật hiện tại</string>
+    <string name="preview_subtitle">Thay đổi điểm dự kiến</string>
 
     <!-- Validation errors -->
     <string name="error_no_winner">Hãy chọn người thắng.</string>
-    <string name="error_fan_below_one">Số fan phải ít nhất là 1.</string>
-    <string name="error_discarder_required">Hãy chọn người bỏ bài.</string>
-    <string name="error_discarder_forbidden_self_draw">Tự mỗ không có người bỏ bài.</string>
-    <string name="error_winner_is_discarder">Người thắng và người bỏ bài phải khác nhau.</string>
+    <string name="error_fan_below_one">Điểm phải lớn hơn 0.</string>
+    <string name="error_discarder_required">Hãy chọn người trả.</string>
+    <string name="error_discarder_forbidden_self_draw">Tự bốc không có người trả.</string>
+    <string name="error_winner_is_discarder">Người thắng và người trả phải khác nhau.</string>
+    <string name="error_amount_below_one">Nhập điểm lớn hơn 0.</string>
+    <string name="error_payer_required">Hãy chọn người trả.</string>
+    <string name="error_payer_forbidden_self_draw">Tự bốc không có người trả.</string>
+    <string name="error_winner_is_payer">Người thắng và người trả phải khác nhau.</string>
     <string name="error_negative_base">Điểm gốc không được âm.</string>
 
     <!-- Logs -->
-    <string name="logs_empty">Chưa có ván nào được lưu.</string>
-    <string name="logs_entry_self_draw">%1$s — Tự mỗ, %2$d fan</string>
-    <string name="logs_entry_discard">%1$s thắng %2$s — %3$d fan</string>
+    <string name="logs_empty">Chưa có ván nào.</string>
+    <string name="recent_rounds_title">Các ván gần đây</string>
+    <string name="logs_entry_self_draw">%1$s tự bốc, mỗi người %2$d</string>
+    <string name="logs_entry_discard">%1$s thắng từ %2$s, %3$d</string>
 
     <!-- Stats -->
     <string name="stats_empty">Chưa có ván nào. Lưu một ván để xem thống kê.</string>

@@ -12,19 +12,22 @@
     <string name="seat_north_short">N</string>
 
     <!-- Win types -->
-    <string name="win_type_self_draw">Self Draw</string>
-    <string name="win_type_discard">Discard</string>
+    <string name="win_type_self_draw">Self-draw</string>
+    <string name="win_type_discard">Discard win</string>
 
     <!-- Main screen labels -->
-    <string name="label_round_winner">Round Winner</string>
+    <string name="label_round_winner">Winner</string>
     <string name="label_win_type">Win Type</string>
-    <string name="label_fan_count">Fan Count</string>
-    <string name="label_discarder">Discarder</string>
+    <string name="label_fan_count">Points</string>
+    <string name="label_discarder">Payer</string>
+    <string name="label_amount_self_draw">Each loser pays</string>
+    <string name="label_amount_discard">Payer pays</string>
+    <string name="label_payer">Payer</string>
     <string name="label_required">Required</string>
     <string name="label_live_session">Live Session</string>
 
     <!-- Actions -->
-    <string name="action_commit_round">Commit Round</string>
+    <string name="action_commit_round">Record</string>
     <string name="action_undo">Undo</string>
     <string name="action_reset">Reset</string>
     <string name="action_save">Save</string>
@@ -35,7 +38,7 @@
     <string name="action_back">Back</string>
 
     <!-- Screen titles -->
-    <string name="title_main">Scoreboard</string>
+    <string name="title_main">Score Tracker</string>
     <string name="title_score_table">Score Table</string>
     <string name="title_logs">Round Logs</string>
     <string name="title_stats">Player Stats</string>
@@ -48,25 +51,30 @@
     <string name="nav_stats">Stats</string>
 
     <!-- Preview / summary -->
-    <string name="preview_empty">Select a winner to preview the round.</string>
-    <string name="preview_title_self_draw">%1$d-fan Self Draw</string>
-    <string name="preview_title_discard">%1$d-fan Discard Win</string>
+    <string name="preview_empty">Choose a winner and enter points.</string>
+    <string name="preview_title_self_draw">Self-draw: %1$d each</string>
+    <string name="preview_title_discard">Discard win: %1$d</string>
     <string name="preview_row_pays">%1$s pays</string>
     <string name="preview_row_gains">%1$s gains</string>
-    <string name="preview_subtitle">Calculated for current rules</string>
+    <string name="preview_subtitle">Pending point changes</string>
 
     <!-- Validation errors -->
     <string name="error_no_winner">Select a winner.</string>
-    <string name="error_fan_below_one">Fan count must be at least 1.</string>
-    <string name="error_discarder_required">Select the discarder.</string>
-    <string name="error_discarder_forbidden_self_draw">Self Draw cannot have a discarder.</string>
-    <string name="error_winner_is_discarder">Winner and discarder must be different.</string>
+    <string name="error_fan_below_one">Points must be greater than zero.</string>
+    <string name="error_discarder_required">Select the payer.</string>
+    <string name="error_discarder_forbidden_self_draw">Self-draw cannot have a payer.</string>
+    <string name="error_winner_is_discarder">Winner and payer must be different.</string>
+    <string name="error_amount_below_one">Enter points greater than zero.</string>
+    <string name="error_payer_required">Select the payer.</string>
+    <string name="error_payer_forbidden_self_draw">Self-draw cannot have a payer.</string>
+    <string name="error_winner_is_payer">Winner and payer must be different.</string>
     <string name="error_negative_base">Base amounts must be non-negative.</string>
 
     <!-- Logs -->
-    <string name="logs_empty">No rounds committed yet.</string>
-    <string name="logs_entry_self_draw">%1$s — Self Draw, %2$d fan</string>
-    <string name="logs_entry_discard">%1$s beats %2$s — %3$d fan</string>
+    <string name="logs_empty">No rounds yet.</string>
+    <string name="recent_rounds_title">Recent rounds</string>
+    <string name="logs_entry_self_draw">%1$s self-draws, %2$d each</string>
+    <string name="logs_entry_discard">%1$s wins from %2$s, %3$d</string>
 
     <!-- Stats -->
     <string name="stats_empty">No rounds yet. Commit a round to see stats.</string>

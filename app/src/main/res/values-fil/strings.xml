@@ -12,19 +12,22 @@
     <string name="seat_north_short">H</string>
 
     <!-- Win types -->
-    <string name="win_type_self_draw">Self Draw</string>
-    <string name="win_type_discard">Mula sa tapon</string>
+    <string name="win_type_self_draw">Self-draw</string>
+    <string name="win_type_discard">Panalo sa tapon</string>
 
     <!-- Main screen labels -->
-    <string name="label_round_winner">Nanalo sa round</string>
+    <string name="label_round_winner">Nanalo</string>
     <string name="label_win_type">Uri ng panalo</string>
-    <string name="label_fan_count">Bilang ng fan</string>
-    <string name="label_discarder">Nagtapon</string>
+    <string name="label_fan_count">Puntos</string>
+    <string name="label_discarder">Magbabayad</string>
+    <string name="label_amount_self_draw">Bawat talo magbabayad</string>
+    <string name="label_amount_discard">Magbabayad ang payer</string>
+    <string name="label_payer">Magbabayad</string>
     <string name="label_required">Kailangan</string>
     <string name="label_live_session">Kasalukuyang laro</string>
 
     <!-- Actions -->
-    <string name="action_commit_round">I-save ang round</string>
+    <string name="action_commit_round">Itala</string>
     <string name="action_undo">I-undo</string>
     <string name="action_reset">I-reset</string>
     <string name="action_save">I-save</string>
@@ -35,7 +38,7 @@
     <string name="action_back">Bumalik</string>
 
     <!-- Screen titles -->
-    <string name="title_main">Scoreboard</string>
+    <string name="title_main">Score Tracker</string>
     <string name="title_score_table">Talahanayan ng puntos</string>
     <string name="title_logs">Mga log ng round</string>
     <string name="title_stats">Stats ng manlalaro</string>
@@ -48,25 +51,30 @@
     <string name="nav_stats">Stats</string>
 
     <!-- Preview / summary -->
-    <string name="preview_empty">Pumili ng nanalo para makita ang preview ng round.</string>
-    <string name="preview_title_self_draw">%1$d-fan Self Draw</string>
-    <string name="preview_title_discard">%1$d-fan Panalo sa tapon</string>
+    <string name="preview_empty">Pumili ng nanalo at ilagay ang puntos.</string>
+    <string name="preview_title_self_draw">Self-draw: %1$d bawat isa</string>
+    <string name="preview_title_discard">Panalo sa tapon: %1$d</string>
     <string name="preview_row_pays">%1$s ang magbabayad</string>
     <string name="preview_row_gains">%1$s ang makakakuha</string>
-    <string name="preview_subtitle">Kinuwenta ayon sa kasalukuyang rules</string>
+    <string name="preview_subtitle">Naka-preview na pagbabago ng puntos</string>
 
     <!-- Validation errors -->
     <string name="error_no_winner">Pumili ng nanalo.</string>
-    <string name="error_fan_below_one">Ang fan count ay dapat hindi bababa sa 1.</string>
-    <string name="error_discarder_required">Pumili ng nagtapon.</string>
-    <string name="error_discarder_forbidden_self_draw">Walang discarder ang Self Draw.</string>
-    <string name="error_winner_is_discarder">Magkaiba dapat ang nanalo at nagtapon.</string>
+    <string name="error_fan_below_one">Dapat mas mataas sa 0 ang puntos.</string>
+    <string name="error_discarder_required">Pumili ng magbabayad.</string>
+    <string name="error_discarder_forbidden_self_draw">Walang payer ang self-draw.</string>
+    <string name="error_winner_is_discarder">Magkaiba dapat ang nanalo at magbabayad.</string>
+    <string name="error_amount_below_one">Maglagay ng puntos na mas mataas sa 0.</string>
+    <string name="error_payer_required">Pumili ng magbabayad.</string>
+    <string name="error_payer_forbidden_self_draw">Walang payer ang self-draw.</string>
+    <string name="error_winner_is_payer">Magkaiba dapat ang nanalo at magbabayad.</string>
     <string name="error_negative_base">Hindi puwedeng negatibo ang base amounts.</string>
 
     <!-- Logs -->
-    <string name="logs_empty">Wala pang naitalang round.</string>
-    <string name="logs_entry_self_draw">%1$s — Self Draw, %2$d fan</string>
-    <string name="logs_entry_discard">%1$s laban kay %2$s — %3$d fan</string>
+    <string name="logs_empty">Wala pang round.</string>
+    <string name="recent_rounds_title">Mga nakaraang round</string>
+    <string name="logs_entry_self_draw">%1$s self-draw, %2$d bawat isa</string>
+    <string name="logs_entry_discard">%1$s panalo mula kay %2$s, %3$d</string>
 
     <!-- Stats -->
     <string name="stats_empty">Wala pang round. Mag-save ng round para makita ang stats.</string>
