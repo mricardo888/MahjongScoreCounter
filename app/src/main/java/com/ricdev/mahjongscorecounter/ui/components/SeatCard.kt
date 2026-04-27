@@ -1,6 +1,7 @@
 package com.ricdev.mahjongscorecounter.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ fun SeatCard(
     lastDelta: Int?,
     highlighted: Boolean,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     val formatter = remember { NumberFormat.getInstance(Locale.getDefault()) }
     val border = if (highlighted) {
@@ -40,7 +42,9 @@ fun SeatCard(
         BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     }
     Surface(
-        modifier = modifier,
+        modifier = modifier.then(
+            if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier
+        ),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = if (highlighted) 6.dp else 2.dp,

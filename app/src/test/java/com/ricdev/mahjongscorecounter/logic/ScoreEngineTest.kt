@@ -110,6 +110,26 @@ class ScoreEngineTest {
     }
 
     @Test
+    fun `validate accepts amount of 1`() {
+        val input = RoundInput(Seat.EAST, WinType.SELF_DRAW, amount = 1)
+        assertEquals(null, ScoreEngine.validate(input))
+    }
+
+    @Test
+    fun `self draw result is always zero-sum`() {
+        val input = RoundInput(Seat.NORTH, WinType.SELF_DRAW, amount = 100)
+        val result = ScoreEngine.calculate(input)
+        assertEquals(0, result.deltas.values.sum())
+    }
+
+    @Test
+    fun `discard win result is always zero-sum`() {
+        val input = RoundInput(Seat.WEST, WinType.DISCARD_WIN, payer = Seat.EAST, amount = 100)
+        val result = ScoreEngine.calculate(input)
+        assertEquals(0, result.deltas.values.sum())
+    }
+
+    @Test
     fun `totals accumulate across committed rounds`() {
         val selfDraw = RoundInput(
             winner = Seat.EAST,

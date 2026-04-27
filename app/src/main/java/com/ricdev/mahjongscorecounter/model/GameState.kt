@@ -5,6 +5,5 @@ import com.ricdev.mahjongscorecounter.logic.ScoreEngine
 data class GameState(
     val history: List<CommittedRound> = emptyList(),
 ) {
-    val totals: Map<Seat, Int>
-        get() = ScoreEngine.computeTotals(history)
+    val totals: Map<Seat, Int> = ScoreEngine.computeTotals(history)
 }

@@ -25,6 +25,7 @@ fun TableScoreboard(
     totals: Map<Seat, Int>,
     lastRound: CommittedRound?,
     highlightedWinner: Seat?,
+    onSeatSelected: (Seat) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(modifier = modifier) {
@@ -48,16 +49,17 @@ fun TableScoreboard(
                 ) {
                     Seat.entries.forEach { seat ->
                         val alignment: Alignment = when (seat) {
-                            Seat.EAST -> Alignment.TopCenter
+                            Seat.EAST -> Alignment.CenterEnd
                             Seat.SOUTH -> Alignment.BottomCenter
                             Seat.WEST -> Alignment.CenterStart
-                            Seat.NORTH -> Alignment.CenterEnd
+                            Seat.NORTH -> Alignment.TopCenter
                         }
                         SeatCard(
                             seat = seat,
                             total = totals[seat] ?: 0,
                             lastDelta = lastRound?.result?.deltas?.get(seat),
                             highlighted = seat == highlightedWinner,
+                            onClick = { onSeatSelected(seat) },
                             modifier = Modifier
                                 .align(alignment)
                                 .width(cardWidth),
@@ -82,6 +84,7 @@ private fun TableScoreboardPreview() {
             ),
             lastRound = null,
             highlightedWinner = Seat.EAST,
+            onSeatSelected = {},
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f),

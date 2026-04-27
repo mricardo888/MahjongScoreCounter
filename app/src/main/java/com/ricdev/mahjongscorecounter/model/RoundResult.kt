@@ -10,5 +10,4 @@ data class RoundResult(
     @SerialName("win_type") val winType: WinType,
 ) {
     val winnerGain: Int get() = deltas[winner] ?: 0
-    val largestLoss: Int get() = -(deltas.values.minOrNull() ?: 0)
 }

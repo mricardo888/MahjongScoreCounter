@@ -66,6 +66,7 @@ fun MainScreen(
             totals = gameState.totals,
             lastRound = gameState.history.lastOrNull(),
             highlightedWinner = form.winner,
+            onSeatSelected = viewModel::selectWinner,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f),
@@ -106,8 +107,6 @@ fun MainScreen(
                 Text(stringResource(R.string.action_reset))
             }
         }
-
-        RecentRounds(history = gameState.history)
     }
 
     if (showResetDialog) {
@@ -129,6 +128,26 @@ fun MainScreen(
                 }
             },
         )
+    }
+}
+
+@Composable
+fun RecentRoundsScreen(
+    viewModel: GameViewModel,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    val gameState by viewModel.gameState.collectAsState()
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(contentPadding)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        RecentRounds(history = gameState.history)
     }
 }
 

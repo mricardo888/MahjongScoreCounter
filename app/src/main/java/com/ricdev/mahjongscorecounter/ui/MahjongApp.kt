@@ -2,82 +2,77 @@ package com.ricdev.mahjongscorecounter.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Calculate
+import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.text.style.TextOverflow
 import com.ricdev.mahjongscorecounter.R
 import com.ricdev.mahjongscorecounter.ui.main.MainScreen
-import com.ricdev.mahjongscorecounter.ui.nav.Destinations
+import com.ricdev.mahjongscorecounter.ui.main.RecentRoundsScreen
 import com.ricdev.mahjongscorecounter.ui.settings.SettingsScreen
 import com.ricdev.mahjongscorecounter.viewmodel.GameViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MahjongApp(viewModel: GameViewModel) {
-    val navController = rememberNavController()
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = backStackEntry?.destination?.route
-    val isSettings = currentRoute == Destinations.SETTINGS
+    val tabs = AppTab.entries
+    var selectedTabIndex by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        stringResource(
-                            if (isSettings) R.string.title_settings else R.string.title_main
-                        )
-                    )
-                },
-                navigationIcon = {
-                    if (isSettings) {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.action_back),
-                            )
-                        }
-                    }
-                },
-                actions = {
-                    if (!isSettings) {
-                        IconButton(onClick = {
-                            navController.navigate(Destinations.SETTINGS) {
-                                launchSingleTop = true
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Settings,
-                                contentDescription = stringResource(R.string.action_settings),
-                            )
-                        }
-                    }
-                },
+                title = { Text(stringResource(R.string.app_name)) },
             )
         },
+        bottomBar = {
+            NavigationBar {
+                tabs.forEachIndexed { index, tab ->
+                    val label = stringResource(tab.titleResId)
+                    NavigationBarItem(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        icon = {
+                            Icon(
+                                imageVector = tab.icon,
+                                contentDescription = label,
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = label,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        },
+                    )
+                }
+            }
+        },
     ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Destinations.MAIN,
-        ) {
-            composable(Destinations.MAIN) {
+        when (tabs[selectedTabIndex]) {
+            AppTab.SCORE_TRACKER -> {
                 MainScreen(viewModel = viewModel, contentPadding = innerPadding)
             }
-            composable(Destinations.SETTINGS) {
+            AppTab.RECENT_ROUNDS -> {
+                RecentRoundsScreen(viewModel = viewModel, contentPadding = innerPadding)
+            }
+            AppTab.SETTINGS -> {
                 SettingsScreen(
                     viewModel = viewModel,
                     contentPadding = innerPadding,
@@ -85,4 +80,13 @@ fun MahjongApp(viewModel: GameViewModel) {
             }
         }
     }
+}
+
+private enum class AppTab(
+    val titleResId: Int,
+    val icon: ImageVector,
+) {
+    SCORE_TRACKER(R.string.title_main, Icons.Rounded.Calculate),
+    RECENT_ROUNDS(R.string.recent_rounds_title, Icons.Rounded.History),
+    SETTINGS(R.string.title_settings, Icons.Rounded.Settings),
 }

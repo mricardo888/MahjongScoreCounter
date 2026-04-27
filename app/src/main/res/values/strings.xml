@@ -18,83 +18,39 @@
     <!-- Main screen labels -->
     <string name="label_round_winner">Winner</string>
     <string name="label_win_type">Win Type</string>
-    <string name="label_fan_count">Points</string>
-    <string name="label_discarder">Player</string>
     <string name="label_amount_self_draw">Each loser pays</string>
     <string name="label_amount_discard">Player pays</string>
     <string name="label_payer">Player</string>
-    <string name="label_required">Required</string>
-    <string name="label_live_session">Live Session</string>
 
     <!-- Actions -->
     <string name="action_commit_round">Record</string>
     <string name="action_undo">Undo</string>
     <string name="action_reset">Reset</string>
-    <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
-    <string name="action_increase">Increase</string>
-    <string name="action_decrease">Decrease</string>
     <string name="action_settings">Settings</string>
     <string name="action_back">Back</string>
 
     <!-- Screen titles -->
     <string name="title_main">Score Tracker</string>
-    <string name="title_score_table">Score Table</string>
-    <string name="title_logs">Round Logs</string>
-    <string name="title_stats">Player Stats</string>
     <string name="title_settings">Settings</string>
-
-    <!-- Bottom nav -->
-    <string name="nav_scoreboard">Scoreboard</string>
-    <string name="nav_score_table">Score Table</string>
-    <string name="nav_logs">Logs</string>
-    <string name="nav_stats">Stats</string>
 
     <!-- Preview / summary -->
     <string name="preview_empty">Choose a winner and enter points.</string>
     <string name="preview_title_self_draw">Self-draw: %1$d each</string>
     <string name="preview_title_discard">Discard win: %1$d</string>
-    <string name="preview_row_pays">%1$s pays</string>
-    <string name="preview_row_gains">%1$s gains</string>
     <string name="preview_subtitle">Pending point changes</string>
 
     <!-- Validation errors -->
-    <string name="error_no_winner">Select a winner.</string>
-    <string name="error_fan_below_one">Points must be greater than zero.</string>
-    <string name="error_discarder_required">Select the payer.</string>
-    <string name="error_discarder_forbidden_self_draw">Self-draw cannot have a payer.</string>
-    <string name="error_winner_is_discarder">Winner and payer must be different.</string>
     <string name="error_amount_below_one">Enter points greater than zero.</string>
     <string name="error_payer_required">Select the payer.</string>
     <string name="error_payer_forbidden_self_draw">Self-draw cannot have a payer.</string>
     <string name="error_winner_is_payer">Winner and payer must be different.</string>
-    <string name="error_negative_base">Base amounts must be non-negative.</string>
 
     <!-- Logs -->
     <string name="logs_empty">No rounds yet.</string>
     <string name="recent_rounds_title">Recent rounds</string>
     <string name="logs_entry_self_draw">%1$s self-draws, %2$d each</string>
     <string name="logs_entry_discard">%1$s wins from %2$s, %3$d</string>
-
-    <!-- Stats -->
-    <string name="stats_empty">No rounds yet. Commit a round to see stats.</string>
-    <string name="stats_total">Total</string>
-    <string name="stats_hands_won">Hands Won</string>
-    <string name="stats_best_round">Best Round</string>
-    <string name="stats_worst_round">Worst Round</string>
-
-    <!-- Score Table screen -->
-    <string name="score_table_rules_header">Scoring Rules</string>
-    <string name="score_table_discard_win_base">Discard Win base (1 fan)</string>
-    <string name="score_table_self_draw_base">Self Draw base (1 fan)</string>
-    <string name="score_table_self_draw_derived">Self Draw base (1 fan): %1$d (half of Discard Win)</string>
-    <string name="score_table_custom_self_draw_title">Custom Self Draw base</string>
-    <string name="score_table_custom_self_draw_subtitle">Set independently instead of automatically halving Discard Win</string>
-    <string name="score_table_fan_points_title">Fan Points Reference</string>
-    <string name="score_table_col_fan">Fan</string>
-    <string name="score_table_col_self_draw">Self Draw</string>
-    <string name="score_table_col_discard">Discard Win</string>
-    <string name="score_table_saved">Scoring rules saved</string>
 
     <!-- Settings screen -->
     <string name="settings_appearance_header">Appearance</string>
@@ -119,85 +75,4 @@
     <string name="reset_dialog_title">Reset game?</string>
     <string name="reset_dialog_message">This will clear all player totals and round history. This cannot be undone.</string>
     <string name="reset_dialog_confirm">Reset</string>
-
-    <!-- Validation errors (new variants) -->
-    <string name="error_tai_below_one">Tai count must be at least 1.</string>
-    <string name="error_tai_below_min">Tai count is below the required minimum.</string>
-    <string name="error_han_below_one">Han must be at least 1.</string>
-    <string name="error_fu_below_min">Fu must be at least 20.</string>
-    <string name="error_fu_invalid">Invalid fu value.</string>
-    <string name="error_input_type_mismatch">Input type does not match scoring rules.</string>
-    <string name="error_negative_count">Count cannot be negative.</string>
-
-    <!-- Game Variants -->
-    <string name="variant_hong_kong_new">HK New Style</string>
-    <string name="variant_taiwanese">Taiwanese 16-Tile</string>
-    <string name="variant_japanese_riichi">Japanese Riichi</string>
-    <string name="variant_hokkien">Hokkien/Fujian</string>
-    <string name="variant_shanghai">Shanghai</string>
-    <string name="variant_sichuan">Sichuan</string>
-    <string name="variant_singaporean">Singaporean</string>
-
-    <!-- Settings – Variant section -->
-    <string name="settings_variant_header">Game Variant</string>
-    <string name="settings_variant_change_title">Change Variant?</string>
-    <string name="settings_variant_change_message">Changing the variant will clear all round history. Continue?</string>
-    <string name="settings_variant_change_confirm">Change</string>
-
-    <!-- Labels (new variants) -->
-    <string name="label_tai_count">Tai Count</string>
-    <string name="label_han">Han</string>
-    <string name="label_fu">Fu</string>
-    <string name="label_honba">Honba</string>
-    <string name="label_riichi_sticks">Riichi Sticks on Table</string>
-    <string name="label_flower_count">Flower Tiles</string>
-    <string name="label_animal_count">Animal Tiles</string>
-    <string name="label_dealer">Dealer</string>
-
-    <!-- Preview titles (new variants) -->
-    <string name="preview_title_self_draw_tai">%1$d-tai Self Draw</string>
-    <string name="preview_title_discard_tai">%1$d-tai Discard Win</string>
-    <string name="preview_title_riichi_tsumo">%1$d han %2$d fu Tsumo</string>
-    <string name="preview_title_riichi_ron">%1$d han %2$d fu Ron</string>
-    <string name="preview_stick_bonus">+%1$d bonus (riichi sticks)</string>
-
-    <!-- Logs (new variants) -->
-    <string name="logs_entry_self_draw_tai">%1$s — Self Draw, %2$d tai</string>
-    <string name="logs_entry_discard_tai">%1$s beats %2$s — %3$d tai</string>
-    <string name="logs_entry_self_draw_riichi">%1$s — Tsumo, %2$d han %3$d fu</string>
-    <string name="logs_entry_discard_riichi">%1$s beats %2$s — %3$d han %4$d fu</string>
-
-    <!-- Score Table – rules editor labels -->
-    <string name="rules_hk_discard_base">Discard Win base (1 fan)</string>
-    <string name="rules_hk_self_draw_base">Self Draw base (1 fan)</string>
-    <string name="rules_hk_max_fan">Max fan (0 = unlimited)</string>
-    <string name="rules_hk_custom_self_draw_title">Custom Self Draw base</string>
-    <string name="rules_hk_custom_self_draw_subtitle">Set independently instead of automatically halving Discard Win</string>
-    <string name="rules_hk_self_draw_derived">Self Draw base: %1$d (half of Discard Win)</string>
-    <string name="rules_tw_base">Base payout</string>
-    <string name="rules_tw_per_tai">Payout per tai</string>
-    <string name="rules_tw_min_tai">Minimum tai to win</string>
-    <string name="rules_tw_self_draw_bonus_tai">Self Draw bonus tai</string>
-    <string name="rules_tw_dealer_multiplier">Dealer multiplier</string>
-    <string name="rules_hok_base">Base payout</string>
-    <string name="rules_hok_per_unit">Payout per unit</string>
-    <string name="rules_hok_max_units">Max units (0 = unlimited)</string>
-    <string name="rules_hok_dealer_doubles">Dealer doubles payout</string>
-    <string name="rules_ri_kiriage_mangan">Kiriage Mangan (rounding promotion)</string>
-    <string name="rules_ri_honba_value">Honba value (points per counter)</string>
-    <string name="rules_ri_stick_value">Riichi stick value (points)</string>
-    <string name="rules_sh_base">Base (1 fan)</string>
-    <string name="rules_sh_max_fan">Max fan</string>
-    <string name="rules_sg_flower_bonus">Flower tile bonus (per tile)</string>
-    <string name="rules_sg_animal_bonus">Animal tile bonus (per animal)</string>
-
-    <!-- Score Table – column headers -->
-    <string name="score_table_col_tai">Tai</string>
-    <string name="score_table_col_payout">Payout</string>
-    <string name="score_table_col_han">Han</string>
-    <string name="score_table_col_non_dealer_ron">Non-dealer ron</string>
-    <string name="score_table_col_dealer_ron">Dealer ron</string>
-    <string name="score_table_riichi_reference">Riichi Point Tiers</string>
-    <string name="score_table_col_non_dealer_tsumo">Non-dealer tsumo</string>
-    <string name="score_table_col_dealer_tsumo">Dealer tsumo</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.ricdev.mahjongscorecounter.viewmodel
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,9 +38,10 @@ class GameViewModel(
     private val _formState = MutableStateFlow(FormState())
     val formState: StateFlow<FormState> = _formState.asStateFlow()
 
+    // Eagerly (not WhileSubscribed) so preview.value is always current when commitRound() reads it.
     val preview: StateFlow<PreviewState> = _formState
         .map { form -> computePreview(form) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PreviewState.Empty)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PreviewState.Empty)
 
     fun selectWinner(seat: Seat) {
         _formState.update { it.withWinner(seat) }
@@ -88,6 +91,12 @@ class GameViewModel(
 
     fun updateThemeMode(mode: ThemeMode) {
         viewModelScope.launch { repository.updateThemeMode(mode) }
+    }
+
+    fun updateLocale(tag: String) {
+        val locales = if (tag.isEmpty()) LocaleListCompat.getEmptyLocaleList()
+                      else LocaleListCompat.forLanguageTags(tag)
+        AppCompatDelegate.setApplicationLocales(locales)
     }
 
     private fun computePreview(form: FormState): PreviewState {

@@ -18,83 +18,39 @@
     <!-- Main screen labels -->
     <string name="label_round_winner">赢家</string>
     <string name="label_win_type">胡牌方式</string>
-    <string name="label_fan_count">点数</string>
-    <string name="label_discarder">付款者</string>
     <string name="label_amount_self_draw">每位输家付款</string>
     <string name="label_amount_discard">付款者付款</string>
     <string name="label_payer">付款者</string>
-    <string name="label_required">必填</string>
-    <string name="label_live_session">当前牌局</string>
 
     <!-- Actions -->
     <string name="action_commit_round">记录</string>
     <string name="action_undo">撤销</string>
     <string name="action_reset">重置</string>
-    <string name="action_save">保存</string>
     <string name="action_cancel">取消</string>
-    <string name="action_increase">增加</string>
-    <string name="action_decrease">减少</string>
     <string name="action_settings">设置</string>
     <string name="action_back">返回</string>
 
     <!-- Screen titles -->
     <string name="title_main">分数记录</string>
-    <string name="title_score_table">分数表</string>
-    <string name="title_logs">对局记录</string>
-    <string name="title_stats">玩家统计</string>
     <string name="title_settings">设置</string>
-
-    <!-- Bottom nav -->
-    <string name="nav_scoreboard">计分板</string>
-    <string name="nav_score_table">分数表</string>
-    <string name="nav_logs">记录</string>
-    <string name="nav_stats">统计</string>
 
     <!-- Preview / summary -->
     <string name="preview_empty">选择赢家并输入点数。</string>
     <string name="preview_title_self_draw">自摸：每位 %1$d</string>
     <string name="preview_title_discard">吃牌胡：%1$d</string>
-    <string name="preview_row_pays">%1$s 支付</string>
-    <string name="preview_row_gains">%1$s 得分</string>
     <string name="preview_subtitle">预计分数变化</string>
 
     <!-- Validation errors -->
-    <string name="error_no_winner">请选择赢家。</string>
-    <string name="error_fan_below_one">点数必须大于 0。</string>
-    <string name="error_discarder_required">请选择付款者。</string>
-    <string name="error_discarder_forbidden_self_draw">自摸不能有付款者。</string>
-    <string name="error_winner_is_discarder">赢家与付款者不能相同。</string>
     <string name="error_amount_below_one">请输入大于 0 的点数。</string>
     <string name="error_payer_required">请选择付款者。</string>
     <string name="error_payer_forbidden_self_draw">自摸不能有付款者。</string>
     <string name="error_winner_is_payer">赢家与付款者不能相同。</string>
-    <string name="error_negative_base">底分不能为负数。</string>
 
     <!-- Logs -->
     <string name="logs_empty">暂无对局记录。</string>
     <string name="recent_rounds_title">最近记录</string>
     <string name="logs_entry_self_draw">%1$s 自摸，每位 %2$d</string>
     <string name="logs_entry_discard">%1$s 胡 %2$s，%3$d</string>
-
-    <!-- Stats -->
-    <string name="stats_empty">暂无对局。完成一局后即可查看统计。</string>
-    <string name="stats_total">总分</string>
-    <string name="stats_hands_won">胡牌次数</string>
-    <string name="stats_best_round">最佳一局</string>
-    <string name="stats_worst_round">最差一局</string>
-
-    <!-- Score Table screen -->
-    <string name="score_table_rules_header">计分规则</string>
-    <string name="score_table_discard_win_base">点炮底分（1 番）</string>
-    <string name="score_table_self_draw_base">自摸底分（1 番）</string>
-    <string name="score_table_self_draw_derived">自摸底分（1 番）：%1$d（点炮底分之半）</string>
-    <string name="score_table_custom_self_draw_title">自定义自摸底分</string>
-    <string name="score_table_custom_self_draw_subtitle">独立设置，而非自动使用点炮底分之半</string>
-    <string name="score_table_fan_points_title">番数分数参考表</string>
-    <string name="score_table_col_fan">番</string>
-    <string name="score_table_col_self_draw">自摸</string>
-    <string name="score_table_col_discard">点炮</string>
-    <string name="score_table_saved">计分规则已保存</string>
 
     <!-- Settings screen -->
     <string name="settings_appearance_header">外观</string>
@@ -111,85 +67,4 @@
     <string name="reset_dialog_title">重置对局？</string>
     <string name="reset_dialog_message">将清除所有玩家分数及对局记录，此操作无法撤销。</string>
     <string name="reset_dialog_confirm">重置</string>
-
-    <!-- Validation errors (new variants) -->
-    <string name="error_tai_below_one">台数最少为 1。</string>
-    <string name="error_tai_below_min">台数未达最低要求。</string>
-    <string name="error_han_below_one">番数最少为 1。</string>
-    <string name="error_fu_below_min">符数最少为 20。</string>
-    <string name="error_fu_invalid">符数无效。</string>
-    <string name="error_input_type_mismatch">输入类型与计分规则不符。</string>
-    <string name="error_negative_count">数量不能为负数。</string>
-
-    <!-- Game Variants -->
-    <string name="variant_hong_kong_new">香港新章</string>
-    <string name="variant_taiwanese">台湾十六张</string>
-    <string name="variant_japanese_riichi">日本立直</string>
-    <string name="variant_hokkien">闽南/福建</string>
-    <string name="variant_shanghai">上海</string>
-    <string name="variant_sichuan">四川血战</string>
-    <string name="variant_singaporean">新加坡</string>
-
-    <!-- Settings – Variant section -->
-    <string name="settings_variant_header">游戏玩法</string>
-    <string name="settings_variant_change_title">更改玩法？</string>
-    <string name="settings_variant_change_message">更改玩法将清除所有对局记录，确定继续？</string>
-    <string name="settings_variant_change_confirm">更改</string>
-
-    <!-- Labels (new variants) -->
-    <string name="label_tai_count">台数</string>
-    <string name="label_han">番数</string>
-    <string name="label_fu">符数</string>
-    <string name="label_honba">本场</string>
-    <string name="label_riichi_sticks">场上立直棒</string>
-    <string name="label_flower_count">花牌数</string>
-    <string name="label_animal_count">动物牌数</string>
-    <string name="label_dealer">庄家</string>
-
-    <!-- Preview titles (new variants) -->
-    <string name="preview_title_self_draw_tai">%1$d 台自摸</string>
-    <string name="preview_title_discard_tai">%1$d 台点炮</string>
-    <string name="preview_title_riichi_tsumo">%1$d 番 %2$d 符自摸</string>
-    <string name="preview_title_riichi_ron">%1$d 番 %2$d 符荣和</string>
-    <string name="preview_stick_bonus">+%1$d 附加（立直棒）</string>
-
-    <!-- Logs (new variants) -->
-    <string name="logs_entry_self_draw_tai">%1$s — 自摸 %2$d 台</string>
-    <string name="logs_entry_discard_tai">%1$s 胡 %2$s 点炮 — %3$d 台</string>
-    <string name="logs_entry_self_draw_riichi">%1$s — 自摸 %2$d 番 %3$d 符</string>
-    <string name="logs_entry_discard_riichi">%1$s 荣和 %2$s — %3$d 番 %4$d 符</string>
-
-    <!-- Score Table – rules editor labels -->
-    <string name="rules_hk_discard_base">点炮底分（1 番）</string>
-    <string name="rules_hk_self_draw_base">自摸底分（1 番）</string>
-    <string name="rules_hk_max_fan">番数上限（0 = 无限制）</string>
-    <string name="rules_hk_custom_self_draw_title">自定义自摸底分</string>
-    <string name="rules_hk_custom_self_draw_subtitle">独立设置，而非自动使用点炮底分之半</string>
-    <string name="rules_hk_self_draw_derived">自摸底分：%1$d（点炮底分之半）</string>
-    <string name="rules_tw_base">底分</string>
-    <string name="rules_tw_per_tai">每台加分</string>
-    <string name="rules_tw_min_tai">最低台数</string>
-    <string name="rules_tw_self_draw_bonus_tai">自摸加台</string>
-    <string name="rules_tw_dealer_multiplier">庄家倍数</string>
-    <string name="rules_hok_base">底分</string>
-    <string name="rules_hok_per_unit">每台加分</string>
-    <string name="rules_hok_max_units">台数上限（0 = 无限制）</string>
-    <string name="rules_hok_dealer_doubles">庄家双倍</string>
-    <string name="rules_ri_kiriage_mangan">切上满贯</string>
-    <string name="rules_ri_honba_value">本场点数（每本）</string>
-    <string name="rules_ri_stick_value">立直棒点数</string>
-    <string name="rules_sh_base">底分（1 番）</string>
-    <string name="rules_sh_max_fan">番数上限</string>
-    <string name="rules_sg_flower_bonus">花牌加分（每张）</string>
-    <string name="rules_sg_animal_bonus">动物牌加分（每只）</string>
-
-    <!-- Score Table – column headers -->
-    <string name="score_table_col_tai">台</string>
-    <string name="score_table_col_payout">赔分</string>
-    <string name="score_table_col_han">番</string>
-    <string name="score_table_col_non_dealer_ron">闲家荣和</string>
-    <string name="score_table_col_dealer_ron">庄家荣和</string>
-    <string name="score_table_riichi_reference">立直点数等级</string>
-    <string name="score_table_col_non_dealer_tsumo">闲家自摸</string>
-    <string name="score_table_col_dealer_tsumo">庄家自摸</string>
 </resources>
