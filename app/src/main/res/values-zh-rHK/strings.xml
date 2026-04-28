@@ -13,7 +13,7 @@
 
     <!-- Win types -->
     <string name="win_type_self_draw">自摸</string>
-    <string name="win_type_discard">食糊</string>
+    <string name="win_type_discard">出銃</string>
 
     <!-- Main screen labels -->
     <string name="label_round_winner">贏家</string>
