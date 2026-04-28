@@ -37,7 +37,7 @@
     <!-- Preview / summary -->
     <string name="preview_empty">選擇贏家並輸入點數。</string>
     <string name="preview_title_self_draw">自摸：每位 %1$d</string>
-    <string name="preview_title_discard">食糊：%1$d</string>
+    <string name="preview_title_discard">出銃：%1$d</string>
     <string name="preview_subtitle">預計分數變化</string>
 
     <!-- Validation errors -->
