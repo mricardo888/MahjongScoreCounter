@@ -36,12 +36,13 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">Choose a winner and enter points.</string>
-    <string name="preview_title_self_draw">Self-draw: %1$d each</string>
-    <string name="preview_title_discard">Discard win: %1$d</string>
+    <string name="preview_title_self_draw">Self-draw: %1$s each</string>
+    <string name="preview_title_discard">Discard win: %1$s</string>
     <string name="preview_subtitle">Pending point changes</string>
 
     <!-- Validation errors -->
     <string name="error_amount_below_one">Enter points greater than zero.</string>
+    <string name="error_amount_above_max">Enter 999,999 points or fewer.</string>
     <string name="error_payer_required">Select the payer.</string>
     <string name="error_payer_forbidden_self_draw">Self-draw cannot have a payer.</string>
     <string name="error_winner_is_payer">Winner and payer must be different.</string>
@@ -49,8 +50,14 @@
     <!-- Logs -->
     <string name="logs_empty">No rounds yet.</string>
     <string name="recent_rounds_title">Recent rounds</string>
-    <string name="logs_entry_self_draw">%1$s self-draws, %2$d each</string>
-    <string name="logs_entry_discard">%1$s wins from %2$s, %3$d</string>
+    <string name="logs_entry_self_draw">%1$s self-draws, %2$s each</string>
+    <string name="logs_entry_discard">%1$s wins from %2$s, %3$s</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_select_winner">Select %1$s as winner</string>
+    <string name="accessibility_seat_score">%1$s score %2$s</string>
+    <string name="accessibility_seat_score_with_delta">%1$s score %2$s, last change %3$s</string>
+    <string name="accessibility_selected_winner">Selected winner.</string>
 
     <!-- Settings screen -->
     <string name="settings_appearance_header">Appearance</string>
@@ -70,6 +77,7 @@
     <string name="language_zh_cn" translatable="false">简体中文</string>
     <string name="settings_about_header">About</string>
     <string name="settings_about_version">Version %1$s</string>
+    <string name="settings_about_scoring_model">Simplified zero-sum scoring</string>
 
     <!-- Reset dialog -->
     <string name="reset_dialog_title">Reset game?</string>

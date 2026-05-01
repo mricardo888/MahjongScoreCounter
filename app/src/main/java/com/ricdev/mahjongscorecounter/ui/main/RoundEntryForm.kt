@@ -9,12 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +27,7 @@ fun RoundEntryForm(
     form: FormState,
     onWinnerSelected: (Seat) -> Unit,
     onWinTypeSelected: (WinType) -> Unit,
-    onAmountChange: (Int) -> Unit,
+    onAmountTextChange: (String) -> Unit,
     onPayerSelected: (Seat?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -45,6 +41,7 @@ fun RoundEntryForm(
             selected = form.winner,
             onSelectedChange = onWinnerSelected,
             label = { seat -> stringResource(seat.shortLabelResId()) },
+            semanticLabel = { seat -> stringResource(seat.labelResId()) },
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -65,12 +62,12 @@ fun RoundEntryForm(
         )
 
         AmountField(
-            amount = form.amount,
+            amountText = form.amountText,
             labelResId = when (form.winType) {
                 WinType.SELF_DRAW -> R.string.label_amount_self_draw
                 WinType.DISCARD_WIN -> R.string.label_amount_discard
             },
-            onAmountChange = onAmountChange,
+            onAmountTextChange = onAmountTextChange,
         )
 
         if (form.winType == WinType.DISCARD_WIN && form.winner != null) {
@@ -81,6 +78,7 @@ fun RoundEntryForm(
                 selected = form.payer,
                 onSelectedChange = onPayerSelected,
                 label = { seat -> stringResource(seat.shortLabelResId()) },
+                semanticLabel = { seat -> stringResource(seat.labelResId()) },
                 modifier = Modifier.fillMaxWidth(),
             )
         }
@@ -89,27 +87,21 @@ fun RoundEntryForm(
 
 @Composable
 private fun AmountField(
-    amount: Int,
+    amountText: String,
     labelResId: Int,
-    onAmountChange: (Int) -> Unit,
+    onAmountTextChange: (String) -> Unit,
 ) {
-    var amountText by remember { mutableStateOf(amount.takeIf { it > 0 }?.toString().orEmpty()) }
-
-    LaunchedEffect(amount) {
-        amountText = amount.takeIf { it > 0 }?.toString().orEmpty()
-    }
-
     OutlinedTextField(
         value = amountText,
         onValueChange = { raw ->
-            val filtered = raw.filter { it.isDigit() }
-            amountText = filtered
-            onAmountChange(filtered.toIntOrNull() ?: 0)
+            onAmountTextChange(raw)
         },
         label = { Text(stringResource(labelResId)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("round_amount"),
     )
 }
 
@@ -138,11 +130,11 @@ private fun RoundEntryFormPreview() {
                 winner = Seat.WEST,
                 winType = WinType.DISCARD_WIN,
                 payer = Seat.NORTH,
-                amount = 8,
+                amountText = "8",
             ),
             onWinnerSelected = {},
             onWinTypeSelected = {},
-            onAmountChange = {},
+            onAmountTextChange = {},
             onPayerSelected = {},
             modifier = Modifier.padding(16.dp),
         )

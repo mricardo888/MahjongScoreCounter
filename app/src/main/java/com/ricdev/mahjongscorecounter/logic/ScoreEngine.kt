@@ -8,9 +8,11 @@ import com.ricdev.mahjongscorecounter.model.ValidationError
 import com.ricdev.mahjongscorecounter.model.WinType
 
 object ScoreEngine {
+    const val MAX_ROUND_AMOUNT = 999_999
 
     fun validate(input: RoundInput): ValidationError? {
         if (input.amount <= 0) return ValidationError.AmountBelowOne
+        if (input.amount > MAX_ROUND_AMOUNT) return ValidationError.AmountAboveMaximum
 
         return when (input.winType) {
             WinType.SELF_DRAW -> {

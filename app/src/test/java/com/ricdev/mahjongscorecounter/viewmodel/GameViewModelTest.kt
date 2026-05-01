@@ -4,6 +4,7 @@ import com.ricdev.mahjongscorecounter.data.GameRepository
 import com.ricdev.mahjongscorecounter.model.CommittedRound
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.ThemeMode
+import com.ricdev.mahjongscorecounter.model.ValidationError
 import com.ricdev.mahjongscorecounter.model.WinType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,7 +54,7 @@ class GameViewModelTest {
         assertNull(form.winner)
         assertEquals(WinType.SELF_DRAW, form.winType)
         assertNull(form.payer)
-        assertEquals(0, form.amount)
+        assertEquals("", form.amountText)
         Seat.entries.forEach { seat ->
             assertEquals(0, state.totals[seat])
         }
@@ -87,7 +88,7 @@ class GameViewModelTest {
     @Test
     fun `preview becomes valid when self draw has winner and amount`() = runTest {
         viewModel.selectWinner(Seat.EAST)
-        viewModel.setAmount(4)
+        viewModel.setAmountText("4")
         advanceUntilIdle()
 
         val preview = viewModel.preview.first()
@@ -107,7 +108,7 @@ class GameViewModelTest {
     fun `preview is invalid when discard win missing payer`() = runTest {
         viewModel.selectWinner(Seat.EAST)
         viewModel.selectWinType(WinType.DISCARD_WIN)
-        viewModel.setAmount(5)
+        viewModel.setAmountText("5")
         advanceUntilIdle()
 
         assertTrue(viewModel.preview.first() is PreviewState.Invalid)
@@ -116,7 +117,7 @@ class GameViewModelTest {
     @Test
     fun `self draw commit updates totals and history`() = runTest {
         viewModel.selectWinner(Seat.EAST)
-        viewModel.setAmount(3)
+        viewModel.setAmountText("3")
         advanceUntilIdle()
 
         viewModel.commitRound()
@@ -135,7 +136,7 @@ class GameViewModelTest {
         viewModel.selectWinner(Seat.WEST)
         viewModel.selectWinType(WinType.DISCARD_WIN)
         viewModel.selectPayer(Seat.SOUTH)
-        viewModel.setAmount(8)
+        viewModel.setAmountText("8")
         advanceUntilIdle()
 
         viewModel.commitRound()
@@ -154,7 +155,7 @@ class GameViewModelTest {
         viewModel.selectWinner(Seat.WEST)
         viewModel.selectWinType(WinType.DISCARD_WIN)
         viewModel.selectPayer(Seat.NORTH)
-        viewModel.setAmount(7)
+        viewModel.setAmountText("7")
         advanceUntilIdle()
 
         viewModel.commitRound()
@@ -163,8 +164,27 @@ class GameViewModelTest {
         val form = viewModel.formState.first()
         assertEquals(Seat.WEST, form.winner)
         assertEquals(WinType.DISCARD_WIN, form.winType)
-        assertEquals(0, form.amount)
+        assertEquals("", form.amountText)
         assertNull(form.payer)
+    }
+
+    @Test
+    fun `amount text keeps digits only`() = runTest {
+        viewModel.setAmountText("12a,3")
+
+        assertEquals("123", viewModel.formState.first().amountText)
+    }
+
+    @Test
+    fun `preview rejects amount above maximum`() = runTest {
+        viewModel.selectWinner(Seat.EAST)
+        viewModel.setAmountText("1000000")
+        advanceUntilIdle()
+
+        val preview = viewModel.preview.first()
+
+        assertTrue(preview is PreviewState.Invalid)
+        assertEquals(ValidationError.AmountAboveMaximum, (preview as PreviewState.Invalid).error)
     }
 
     @Test
@@ -224,14 +244,14 @@ class GameViewModelTest {
         }
         assertNull(form.winner)
         assertEquals(WinType.SELF_DRAW, form.winType)
-        assertEquals(0, form.amount)
+        assertEquals("", form.amountText)
         assertNull(form.payer)
     }
 
     private fun TestScope.commitSelfDraw(winner: Seat, amount: Int) {
         viewModel.selectWinner(winner)
         viewModel.selectWinType(WinType.SELF_DRAW)
-        viewModel.setAmount(amount)
+        viewModel.setAmountText(amount.toString())
         advanceUntilIdle()
         viewModel.commitRound()
         advanceUntilIdle()
@@ -241,7 +261,7 @@ class GameViewModelTest {
         viewModel.selectWinner(winner)
         viewModel.selectWinType(WinType.DISCARD_WIN)
         viewModel.selectPayer(payer)
-        viewModel.setAmount(amount)
+        viewModel.setAmountText(amount.toString())
         advanceUntilIdle()
         viewModel.commitRound()
         advanceUntilIdle()

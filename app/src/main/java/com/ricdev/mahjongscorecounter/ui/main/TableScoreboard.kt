@@ -16,9 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.ricdev.mahjongscorecounter.model.CommittedRound
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.ui.components.SeatCard
-import com.ricdev.mahjongscorecounter.ui.theme.FeltGreen
 import com.ricdev.mahjongscorecounter.ui.theme.MahjongScoreCounterTheme
-import com.ricdev.mahjongscorecounter.ui.theme.WoodBrown
+import com.ricdev.mahjongscorecounter.ui.theme.mahjongColors
 
 @Composable
 fun TableScoreboard(
@@ -29,19 +28,20 @@ fun TableScoreboard(
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(modifier = modifier) {
+        val mahjongColors = MaterialTheme.mahjongColors
         val side = minOf(maxWidth, maxHeight)
         val cardWidth = side * 0.32f
         Surface(
             modifier = Modifier.size(side),
             shape = MaterialTheme.shapes.large,
-            color = WoodBrown,
+            color = mahjongColors.tableWood,
             shadowElevation = 8.dp,
         ) {
             Surface(
                 modifier = Modifier
                     .padding(16.dp),
                 shape = MaterialTheme.shapes.medium,
-                color = FeltGreen,
+                color = mahjongColors.tableFelt,
             ) {
                 androidx.compose.foundation.layout.Box(
                     modifier = Modifier

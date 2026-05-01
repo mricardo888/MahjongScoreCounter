@@ -10,9 +10,13 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ricdev.mahjongscorecounter.R
@@ -21,11 +25,11 @@ import com.ricdev.mahjongscorecounter.model.RoundResult
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.ValidationError
 import com.ricdev.mahjongscorecounter.model.WinType
-import com.ricdev.mahjongscorecounter.ui.theme.DeltaNegative
-import com.ricdev.mahjongscorecounter.ui.theme.DeltaNeutral
-import com.ricdev.mahjongscorecounter.ui.theme.DeltaPositive
 import com.ricdev.mahjongscorecounter.ui.theme.MahjongScoreCounterTheme
+import com.ricdev.mahjongscorecounter.ui.theme.mahjongColors
 import com.ricdev.mahjongscorecounter.viewmodel.PreviewState
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun CalculationSummary(
@@ -41,7 +45,11 @@ fun CalculationSummary(
 
 @Composable
 private fun EmptyPrompt(modifier: Modifier) {
-    ElevatedCard(modifier = modifier.fillMaxWidth()) {
+    ElevatedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { liveRegion = LiveRegionMode.Polite },
+    ) {
         Text(
             text = stringResource(R.string.preview_empty),
             style = MaterialTheme.typography.bodyLarge,
@@ -54,7 +62,9 @@ private fun EmptyPrompt(modifier: Modifier) {
 @Composable
 private fun ErrorCard(error: ValidationError, modifier: Modifier) {
     ElevatedCard(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { liveRegion = LiveRegionMode.Polite },
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
@@ -70,14 +80,25 @@ private fun ErrorCard(error: ValidationError, modifier: Modifier) {
 
 @Composable
 private fun ValidPreview(input: RoundInput, result: RoundResult, modifier: Modifier) {
-    ElevatedCard(modifier = modifier.fillMaxWidth()) {
+    val formatter = remember { NumberFormat.getInstance(Locale.getDefault()) }
+    ElevatedCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { liveRegion = LiveRegionMode.Polite },
+    ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             val title = when (input.winType) {
-                WinType.SELF_DRAW -> stringResource(R.string.preview_title_self_draw, input.amount)
-                WinType.DISCARD_WIN -> stringResource(R.string.preview_title_discard, input.amount)
+                WinType.SELF_DRAW -> stringResource(
+                    R.string.preview_title_self_draw,
+                    formatter.format(input.amount),
+                )
+                WinType.DISCARD_WIN -> stringResource(
+                    R.string.preview_title_discard,
+                    formatter.format(input.amount),
+                )
             }
             Text(
                 text = title,
@@ -100,10 +121,12 @@ private fun ValidPreview(input: RoundInput, result: RoundResult, modifier: Modif
 
 @Composable
 internal fun DeltaRow(seat: Seat, delta: Int) {
+    val mahjongColors = MaterialTheme.mahjongColors
+    val formatter = remember { NumberFormat.getInstance(Locale.getDefault()) }
     val color: Color = when {
-        delta > 0 -> DeltaPositive
-        delta < 0 -> DeltaNegative
-        else -> DeltaNeutral
+        delta > 0 -> mahjongColors.deltaPositive
+        delta < 0 -> mahjongColors.deltaNegative
+        else -> mahjongColors.deltaNeutral
     }
     val sign = if (delta > 0) "+" else ""
     Row(
@@ -115,7 +138,7 @@ internal fun DeltaRow(seat: Seat, delta: Int) {
             style = MaterialTheme.typography.bodyLarge,
         )
         Text(
-            text = "$sign$delta",
+            text = "$sign${formatter.format(delta)}",
             style = MaterialTheme.typography.bodyLarge,
             color = color,
         )
@@ -131,6 +154,7 @@ internal fun Seat.labelResId(): Int = when (this) {
 
 internal fun ValidationError.toResId(): Int = when (this) {
     ValidationError.AmountBelowOne -> R.string.error_amount_below_one
+    ValidationError.AmountAboveMaximum -> R.string.error_amount_above_max
     ValidationError.PayerRequired -> R.string.error_payer_required
     ValidationError.PayerForbiddenForSelfDraw -> R.string.error_payer_forbidden_self_draw
     ValidationError.WinnerIsPayer -> R.string.error_winner_is_payer

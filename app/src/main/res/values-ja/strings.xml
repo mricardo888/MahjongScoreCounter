@@ -36,12 +36,13 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">勝者を選択し、点数を入力してください。</string>
-    <string name="preview_title_self_draw">自摸: 各 %1$d</string>
-    <string name="preview_title_discard">捨て牌勝ち: %1$d</string>
+    <string name="preview_title_self_draw">自摸: 各 %1$s</string>
+    <string name="preview_title_discard">捨て牌勝ち: %1$s</string>
     <string name="preview_subtitle">予定される点数変化</string>
 
     <!-- Validation errors -->
     <string name="error_amount_below_one">0 より大きい点数を入力してください。</string>
+    <string name="error_amount_above_max">999,999 点以下を入力してください。</string>
     <string name="error_payer_required">支払者を選択してください。</string>
     <string name="error_payer_forbidden_self_draw">自摸に支払者はありません。</string>
     <string name="error_winner_is_payer">勝者と支払者は別である必要があります。</string>
@@ -49,8 +50,14 @@
     <!-- Logs -->
     <string name="logs_empty">まだ記録された局はありません。</string>
     <string name="recent_rounds_title">最近の局</string>
-    <string name="logs_entry_self_draw">%1$s 自摸、各 %2$d</string>
-    <string name="logs_entry_discard">%1$s 勝ち、%2$s が %3$d 支払い</string>
+    <string name="logs_entry_self_draw">%1$s 自摸、各 %2$s</string>
+    <string name="logs_entry_discard">%1$s 勝ち、%2$s が %3$s 支払い</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_select_winner">%1$s を勝者に選択</string>
+    <string name="accessibility_seat_score">%1$s の点数 %2$s</string>
+    <string name="accessibility_seat_score_with_delta">%1$s の点数 %2$s、直近の変化 %3$s</string>
+    <string name="accessibility_selected_winner">選択中の勝者です。</string>
 
     <!-- Settings screen -->
     <string name="settings_appearance_header">表示</string>
@@ -62,6 +69,7 @@
     <string name="settings_language_system">システム標準</string>
     <string name="settings_about_header">アプリ情報</string>
     <string name="settings_about_version">バージョン %1$s</string>
+    <string name="settings_about_scoring_model">簡易ゼロサム点数計算</string>
 
     <!-- Reset dialog -->
     <string name="reset_dialog_title">ゲームをリセットしますか？</string>

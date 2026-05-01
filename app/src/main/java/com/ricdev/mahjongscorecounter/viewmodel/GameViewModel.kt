@@ -14,6 +14,7 @@ import com.ricdev.mahjongscorecounter.model.GameState
 import com.ricdev.mahjongscorecounter.model.RoundInput
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.ThemeMode
+import com.ricdev.mahjongscorecounter.model.ValidationError
 import com.ricdev.mahjongscorecounter.model.WinType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -55,8 +56,8 @@ class GameViewModel(
         _formState.update { it.withPayer(seat) }
     }
 
-    fun setAmount(value: Int) {
-        _formState.update { it.copy(amount = value) }
+    fun setAmountText(value: String) {
+        _formState.update { it.copy(amountText = value.filter { char -> char in '0'..'9' }) }
     }
 
     fun commitRound() {
@@ -74,7 +75,7 @@ class GameViewModel(
     private fun resetFormAfterCommit() {
         _formState.update { current ->
             current.copy(
-                amount = 0,
+                amountText = "",
                 payer = null,
             )
         }
@@ -101,11 +102,16 @@ class GameViewModel(
 
     private fun computePreview(form: FormState): PreviewState {
         val winner = form.winner ?: return PreviewState.Empty
+        val amountLong = form.amountText.toLongOrNull()
+            ?: if (form.amountText.isBlank()) 0L else Long.MAX_VALUE
+        if (amountLong > ScoreEngine.MAX_ROUND_AMOUNT) {
+            return PreviewState.Invalid(ValidationError.AmountAboveMaximum)
+        }
         val input = RoundInput(
             winner = winner,
             winType = form.winType,
             payer = form.payer,
-            amount = form.amount,
+            amount = amountLong.toInt(),
         )
         val error = ScoreEngine.validate(input)
         if (error != null) return PreviewState.Invalid(error)

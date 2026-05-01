@@ -36,12 +36,13 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">Chọn người thắng và nhập điểm.</string>
-    <string name="preview_title_self_draw">Tự bốc: mỗi người %1$d</string>
-    <string name="preview_title_discard">Thắng từ bỏ bài: %1$d</string>
+    <string name="preview_title_self_draw">Tự bốc: mỗi người %1$s</string>
+    <string name="preview_title_discard">Thắng từ bỏ bài: %1$s</string>
     <string name="preview_subtitle">Thay đổi điểm dự kiến</string>
 
     <!-- Validation errors -->
     <string name="error_amount_below_one">Nhập điểm lớn hơn 0.</string>
+    <string name="error_amount_above_max">Nhập 999.999 điểm hoặc ít hơn.</string>
     <string name="error_payer_required">Hãy chọn người trả.</string>
     <string name="error_payer_forbidden_self_draw">Tự bốc không có người trả.</string>
     <string name="error_winner_is_payer">Người thắng và người trả phải khác nhau.</string>
@@ -49,8 +50,14 @@
     <!-- Logs -->
     <string name="logs_empty">Chưa có ván nào.</string>
     <string name="recent_rounds_title">Các ván gần đây</string>
-    <string name="logs_entry_self_draw">%1$s tự bốc, mỗi người %2$d</string>
-    <string name="logs_entry_discard">%1$s thắng từ %2$s, %3$d</string>
+    <string name="logs_entry_self_draw">%1$s tự bốc, mỗi người %2$s</string>
+    <string name="logs_entry_discard">%1$s thắng từ %2$s, %3$s</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_select_winner">Chọn %1$s làm người thắng</string>
+    <string name="accessibility_seat_score">Điểm của %1$s là %2$s</string>
+    <string name="accessibility_seat_score_with_delta">Điểm của %1$s là %2$s, thay đổi gần nhất %3$s</string>
+    <string name="accessibility_selected_winner">Người thắng đã chọn.</string>
 
     <!-- Settings screen -->
     <string name="settings_appearance_header">Giao diện</string>
@@ -62,6 +69,7 @@
     <string name="settings_language_system">Mặc định hệ thống</string>
     <string name="settings_about_header">Thông tin</string>
     <string name="settings_about_version">Phiên bản %1$s</string>
+    <string name="settings_about_scoring_model">Tính điểm zero-sum đơn giản</string>
 
     <!-- Reset dialog -->
     <string name="reset_dialog_title">Đặt lại ván chơi?</string>

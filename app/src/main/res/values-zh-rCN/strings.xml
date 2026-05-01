@@ -36,12 +36,13 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">选择赢家并输入点数。</string>
-    <string name="preview_title_self_draw">自摸：每位 %1$d</string>
-    <string name="preview_title_discard">吃牌胡：%1$d</string>
+    <string name="preview_title_self_draw">自摸：每位 %1$s</string>
+    <string name="preview_title_discard">吃牌胡：%1$s</string>
     <string name="preview_subtitle">预计分数变化</string>
 
     <!-- Validation errors -->
     <string name="error_amount_below_one">请输入大于 0 的点数。</string>
+    <string name="error_amount_above_max">请输入 999,999 点或以下。</string>
     <string name="error_payer_required">请选择付款者。</string>
     <string name="error_payer_forbidden_self_draw">自摸不能有付款者。</string>
     <string name="error_winner_is_payer">赢家与付款者不能相同。</string>
@@ -49,8 +50,14 @@
     <!-- Logs -->
     <string name="logs_empty">暂无对局记录。</string>
     <string name="recent_rounds_title">最近记录</string>
-    <string name="logs_entry_self_draw">%1$s 自摸，每位 %2$d</string>
-    <string name="logs_entry_discard">%1$s 胡 %2$s，%3$d</string>
+    <string name="logs_entry_self_draw">%1$s 自摸，每位 %2$s</string>
+    <string name="logs_entry_discard">%1$s 胡 %2$s，%3$s</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_select_winner">选择 %1$s 为赢家</string>
+    <string name="accessibility_seat_score">%1$s 分数 %2$s</string>
+    <string name="accessibility_seat_score_with_delta">%1$s 分数 %2$s，上次变化 %3$s</string>
+    <string name="accessibility_selected_winner">已选为赢家。</string>
 
     <!-- Settings screen -->
     <string name="settings_appearance_header">外观</string>
@@ -62,6 +69,7 @@
     <string name="settings_language_system">跟随系统</string>
     <string name="settings_about_header">关于</string>
     <string name="settings_about_version">版本 %1$s</string>
+    <string name="settings_about_scoring_model">简化零和计分</string>
 
     <!-- Reset dialog -->
     <string name="reset_dialog_title">重置对局？</string>

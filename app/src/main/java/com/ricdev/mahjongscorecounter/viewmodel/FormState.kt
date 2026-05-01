@@ -7,7 +7,7 @@ data class FormState(
     val winner: Seat? = null,
     val winType: WinType = WinType.SELF_DRAW,
     val payer: Seat? = null,
-    val amount: Int = 0,
+    val amountText: String = "",
 )
 
 // Clears payer if it matches the new winner (a player can't pay themselves).

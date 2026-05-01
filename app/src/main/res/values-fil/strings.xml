@@ -36,12 +36,13 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">Pumili ng nanalo at ilagay ang puntos.</string>
-    <string name="preview_title_self_draw">Self-draw: %1$d bawat isa</string>
-    <string name="preview_title_discard">Panalo sa tapon: %1$d</string>
+    <string name="preview_title_self_draw">Self-draw: %1$s bawat isa</string>
+    <string name="preview_title_discard">Panalo sa tapon: %1$s</string>
     <string name="preview_subtitle">Naka-preview na pagbabago ng puntos</string>
 
     <!-- Validation errors -->
     <string name="error_amount_below_one">Maglagay ng puntos na mas mataas sa 0.</string>
+    <string name="error_amount_above_max">Maglagay ng 999,999 puntos o mas mababa.</string>
     <string name="error_payer_required">Pumili ng magbabayad.</string>
     <string name="error_payer_forbidden_self_draw">Walang payer ang self-draw.</string>
     <string name="error_winner_is_payer">Magkaiba dapat ang nanalo at magbabayad.</string>
@@ -49,8 +50,14 @@
     <!-- Logs -->
     <string name="logs_empty">Wala pang round.</string>
     <string name="recent_rounds_title">Mga nakaraang round</string>
-    <string name="logs_entry_self_draw">%1$s self-draw, %2$d bawat isa</string>
-    <string name="logs_entry_discard">%1$s panalo mula kay %2$s, %3$d</string>
+    <string name="logs_entry_self_draw">%1$s self-draw, %2$s bawat isa</string>
+    <string name="logs_entry_discard">%1$s panalo mula kay %2$s, %3$s</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_select_winner">Piliin si %1$s bilang nanalo</string>
+    <string name="accessibility_seat_score">Iskor ni %1$s %2$s</string>
+    <string name="accessibility_seat_score_with_delta">Iskor ni %1$s %2$s, huling pagbabago %3$s</string>
+    <string name="accessibility_selected_winner">Napiling nanalo.</string>
 
     <!-- Settings screen -->
     <string name="settings_appearance_header">Hitsura</string>
@@ -62,6 +69,7 @@
     <string name="settings_language_system">Default ng system</string>
     <string name="settings_about_header">Tungkol sa app</string>
     <string name="settings_about_version">Bersyon %1$s</string>
+    <string name="settings_about_scoring_model">Simpleng zero-sum na pagmamarka</string>
 
     <!-- Reset dialog -->
     <string name="reset_dialog_title">I-reset ang laro?</string>

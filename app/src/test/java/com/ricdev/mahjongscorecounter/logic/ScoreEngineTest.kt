@@ -116,6 +116,28 @@ class ScoreEngineTest {
     }
 
     @Test
+    fun `validate accepts maximum amount`() {
+        val input = RoundInput(
+            Seat.EAST,
+            WinType.SELF_DRAW,
+            amount = ScoreEngine.MAX_ROUND_AMOUNT,
+        )
+
+        assertEquals(null, ScoreEngine.validate(input))
+    }
+
+    @Test
+    fun `amount above maximum is rejected`() {
+        val input = RoundInput(
+            Seat.EAST,
+            WinType.SELF_DRAW,
+            amount = ScoreEngine.MAX_ROUND_AMOUNT + 1,
+        )
+
+        assertEquals(ValidationError.AmountAboveMaximum, ScoreEngine.validate(input))
+    }
+
+    @Test
     fun `self draw result is always zero-sum`() {
         val input = RoundInput(Seat.NORTH, WinType.SELF_DRAW, amount = 100)
         val result = ScoreEngine.calculate(input)
