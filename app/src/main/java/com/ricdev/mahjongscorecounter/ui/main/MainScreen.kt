@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -45,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -199,6 +201,26 @@ private fun ScoreTrackerSinglePane(
                     .align(Alignment.CenterEnd)
                     .fillMaxHeight(),
             )
+
+            val notAtBottom = mainScrollState.value < mainScrollState.maxValue
+            val fadeAlpha by animateFloatAsState(
+                targetValue = if (notAtBottom) 1f else 0f,
+                label = "bottom_fade_alpha",
+            )
+            if (fadeAlpha > 0.01f) {
+                val surfaceColor = MaterialTheme.colorScheme.surface
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(Color.Transparent, surfaceColor.copy(alpha = fadeAlpha))
+                            )
+                        ),
+                )
+            }
         }
 
         RoundActions(
@@ -360,7 +382,11 @@ private fun EdgeScrollBar(
     scrollState: ScrollState,
     modifier: Modifier = Modifier,
 ) {
-    val targetAlpha = if (scrollState.maxValue > 0 && scrollState.isScrollInProgress) 0.6f else 0f
+    val targetAlpha = when {
+        scrollState.maxValue <= 0 -> 0f
+        scrollState.isScrollInProgress -> 0.6f
+        else -> 0.25f
+    }
     val alpha by animateFloatAsState(targetValue = targetAlpha, label = "main_scrollbar_alpha")
 
     if (alpha <= 0.01f) return
