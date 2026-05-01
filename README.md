@@ -28,11 +28,29 @@ Install a JDK before running Gradle. The project uses the Gradle wrapper.
 ```sh
 ./gradlew test
 ./gradlew lint
-./gradlew assembleRelease
+./gradlew bundleRelease   # signed AAB for Play Store (requires keystore.properties)
 ```
 
 Instrumented UI tests require an Android device or emulator:
 
 ```sh
 ./gradlew connectedAndroidTest
+```
+
+### Release signing
+
+Create `keystore.properties` at the project root (already gitignored):
+
+```
+storeFile=/absolute/path/to/release-key.jks
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
+Generate a keystore once with:
+
+```sh
+keytool -genkeypair -v -keystore ~/release-key.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 -alias mahjongscorecounter
 ```
