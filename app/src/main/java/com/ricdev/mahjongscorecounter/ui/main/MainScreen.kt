@@ -1,64 +1,89 @@
 package com.ricdev.mahjongscorecounter.ui.main
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items as gridItems
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Undo
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ricdev.mahjongscorecounter.R
 import com.ricdev.mahjongscorecounter.model.CommittedRound
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.WinType
 import com.ricdev.mahjongscorecounter.ui.adaptive.AdaptiveLayoutInfo
 import com.ricdev.mahjongscorecounter.ui.adaptive.currentAdaptiveLayoutInfo
-import com.ricdev.mahjongscorecounter.ui.theme.mahjongColors
+import com.ricdev.mahjongscorecounter.ui.components.MahjongTile
+import com.ricdev.mahjongscorecounter.ui.components.TileGlyph
+import com.ricdev.mahjongscorecounter.ui.components.labelResId
+import com.ricdev.mahjongscorecounter.ui.components.windGlyph
+import com.ricdev.mahjongscorecounter.ui.theme.Bitter
 import com.ricdev.mahjongscorecounter.viewmodel.FormState
 import com.ricdev.mahjongscorecounter.viewmodel.GameViewModel
 import com.ricdev.mahjongscorecounter.viewmodel.PreviewState
@@ -67,6 +92,8 @@ import java.text.NumberFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.math.max
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
@@ -86,6 +113,7 @@ fun MainScreen(
             form = form,
             totals = gameState.totals,
             lastRound = gameState.history.lastOrNull(),
+            roundsPlayed = gameState.history.size,
             preview = preview,
             onWinnerSelected = viewModel::selectWinner,
             onWinTypeSelected = viewModel::selectWinType,
@@ -102,6 +130,7 @@ fun MainScreen(
             form = form,
             totals = gameState.totals,
             lastRound = gameState.history.lastOrNull(),
+            roundsPlayed = gameState.history.size,
             preview = preview,
             onWinnerSelected = viewModel::selectWinner,
             onWinTypeSelected = viewModel::selectWinType,
@@ -137,11 +166,16 @@ fun MainScreen(
     }
 }
 
+/**
+ * Phone layout: nothing scrolls. The table fills the screen and rounds are entered in a sheet,
+ * opened either from the "Record round" button or by tapping the winner's seat on the table.
+ */
 @Composable
 private fun ScoreTrackerSinglePane(
     form: FormState,
     totals: Map<Seat, Int>,
     lastRound: CommittedRound?,
+    roundsPlayed: Int,
     preview: PreviewState,
     onWinnerSelected: (Seat) -> Unit,
     onWinTypeSelected: (WinType) -> Unit,
@@ -153,86 +187,278 @@ private fun ScoreTrackerSinglePane(
     onReset: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val mainScrollState = rememberScrollState()
+    var showEntrySheet by rememberSaveable { mutableStateOf(false) }
+    var focusAmountOnOpen by rememberSaveable { mutableStateOf(false) }
 
-    Column(
+    val onSeatTapped: (Seat) -> Unit = { seat ->
+        onWinnerSelected(seat)
+        // The winner is already known, so the next thing to enter is the points.
+        focusAmountOnOpen = true
+        showEntrySheet = true
+    }
+    val onNewRound = {
+        focusAmountOnOpen = false
+        showEntrySheet = true
+    }
+    // The winner ring marks the round being entered; once it's recorded the table shows the result.
+    val highlightedWinner = if (showEntrySheet) form.winner else null
+
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .testTag("score_tracker_single_pane"),
     ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-        ) {
-            Column(
+        if (maxWidth > maxHeight) {
+            // Landscape phone: actions sit beside the table so the table keeps its height.
+            Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(mainScrollState)
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 TableScoreboard(
                     totals = totals,
                     lastRound = lastRound,
-                    highlightedWinner = form.winner,
-                    onSeatSelected = onWinnerSelected,
+                    roundsPlayed = roundsPlayed,
+                    highlightedWinner = highlightedWinner,
+                    onSeatSelected = onSeatTapped,
                     modifier = Modifier
-                        .widthIn(max = 420.dp)
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .align(Alignment.CenterHorizontally),
+                        .weight(1f)
+                        .fillMaxHeight(),
                 )
+                Column(
+                    modifier = Modifier.width(280.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    SeatTapHint(modifier = Modifier.fillMaxWidth())
+                    TableActions(
+                        canUndo = canUndo,
+                        onUndo = onUndo,
+                        onReset = onReset,
+                        onNewRound = onNewRound,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        } else {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Table and hint stay together in the middle of whatever height is left.
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    TableScoreboard(
+                        totals = totals,
+                        lastRound = lastRound,
+                        roundsPlayed = roundsPlayed,
+                        highlightedWinner = highlightedWinner,
+                        onSeatSelected = onSeatTapped,
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .aspectRatio(1f),
+                    )
+                    SeatTapHint(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 12.dp),
+                    )
+                }
+                TableActions(
+                    canUndo = canUndo,
+                    onUndo = onUndo,
+                    onReset = onReset,
+                    onNewRound = onNewRound,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
+                )
+            }
+        }
+    }
 
+    if (showEntrySheet) {
+        RoundEntrySheet(
+            form = form,
+            preview = preview,
+            onWinnerSelected = onWinnerSelected,
+            onWinTypeSelected = onWinTypeSelected,
+            onAmountTextChange = onAmountTextChange,
+            onPayerSelected = onPayerSelected,
+            focusAmountOnOpen = focusAmountOnOpen,
+            onRecord = onRecord,
+            onDismiss = { showEntrySheet = false },
+        )
+    }
+}
+
+@Composable
+private fun SeatTapHint(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(R.string.table_tap_hint),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        modifier = modifier,
+    )
+}
+
+/** One clear primary action, with the corrective actions kept quiet above it. */
+@Composable
+private fun TableActions(
+    canUndo: Boolean,
+    onUndo: () -> Unit,
+    onReset: () -> Unit,
+    onNewRound: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            TextButton(onClick = onUndo, enabled = canUndo) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.Undo,
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                )
+                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                Text(stringResource(R.string.action_undo))
+            }
+            TextButton(
+                onClick = onReset,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.tertiary,
+                ),
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.RestartAlt,
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                )
+                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                Text(stringResource(R.string.action_reset))
+            }
+        }
+        Button(
+            onClick = onNewRound,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 56.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = null,
+            )
+            Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+            Text(
+                text = stringResource(R.string.action_new_round),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RoundEntrySheet(
+    form: FormState,
+    preview: PreviewState,
+    onWinnerSelected: (Seat) -> Unit,
+    onWinTypeSelected: (WinType) -> Unit,
+    onAmountTextChange: (String) -> Unit,
+    onPayerSelected: (Seat?) -> Unit,
+    focusAmountOnOpen: Boolean,
+    onRecord: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+    val keyboard = LocalSoftwareKeyboardController.current
+    val amountFocusRequester = remember { FocusRequester() }
+    val canRecord = preview is PreviewState.Valid
+
+    val recordAndClose: () -> Unit = {
+        if (canRecord) {
+            onRecord()
+            keyboard?.hide()
+            scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
+        }
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.action_new_round),
+                    style = MaterialTheme.typography.titleLarge,
+                )
                 RoundEntryForm(
                     form = form,
                     onWinnerSelected = onWinnerSelected,
                     onWinTypeSelected = onWinTypeSelected,
                     onAmountTextChange = onAmountTextChange,
                     onPayerSelected = onPayerSelected,
+                    amountFocusRequester = amountFocusRequester,
+                    onAmountDone = {
+                        // Done records when the round is complete; otherwise it reveals what's missing.
+                        if (canRecord) recordAndClose() else keyboard?.hide()
+                    },
                 )
-
-                CalculationSummary(state = preview)
+                CalculationSummary(
+                    state = preview,
+                    amountEntered = form.amountText.isNotBlank(),
+                )
             }
-
-            EdgeScrollBar(
-                scrollState = mainScrollState,
+            // Stays pinned above the keyboard while the form scrolls.
+            Button(
+                onClick = recordAndClose,
+                enabled = canRecord,
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-            )
-
-            val notAtBottom = mainScrollState.value < mainScrollState.maxValue
-            val fadeAlpha by animateFloatAsState(
-                targetValue = if (notAtBottom) 1f else 0f,
-                label = "bottom_fade_alpha",
-            )
-            if (fadeAlpha > 0.01f) {
-                val surfaceColor = MaterialTheme.colorScheme.surface
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color.Transparent, surfaceColor.copy(alpha = fadeAlpha))
-                            )
-                        ),
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 16.dp)
+                    .heightIn(min = 56.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = null,
+                )
+                Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+                Text(
+                    text = stringResource(R.string.action_commit_round),
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
         }
+    }
 
-        RoundActions(
-            canRecord = preview is PreviewState.Valid,
-            canUndo = canUndo,
-            onRecord = onRecord,
-            onUndo = onUndo,
-            onReset = onReset,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-        )
+    LaunchedEffect(Unit) {
+        if (focusAmountOnOpen) {
+            // Raise the keyboard only once the sheet has finished sliding up. Opening it mid-slide
+            // makes the sheet re-anchor halfway through its animation, which reads as lag.
+            snapshotFlow {
+                sheetState.currentValue == SheetValue.Expanded && !sheetState.isAnimationRunning
+            }.first { it }
+            runCatching { amountFocusRequester.requestFocus() }
+        }
     }
 }
 
@@ -241,6 +467,7 @@ private fun ScoreTrackerTwoPane(
     form: FormState,
     totals: Map<Seat, Int>,
     lastRound: CommittedRound?,
+    roundsPlayed: Int,
     preview: PreviewState,
     onWinnerSelected: (Seat) -> Unit,
     onWinTypeSelected: (WinType) -> Unit,
@@ -263,6 +490,7 @@ private fun ScoreTrackerTwoPane(
         ScoreboardPane(
             totals = totals,
             lastRound = lastRound,
+            roundsPlayed = roundsPlayed,
             highlightedWinner = form.winner,
             onSeatSelected = onWinnerSelected,
             modifier = Modifier
@@ -292,6 +520,7 @@ private fun ScoreTrackerTwoPane(
 private fun ScoreboardPane(
     totals: Map<Seat, Int>,
     lastRound: CommittedRound?,
+    roundsPlayed: Int,
     highlightedWinner: Seat?,
     onSeatSelected: (Seat) -> Unit,
     modifier: Modifier = Modifier,
@@ -304,6 +533,7 @@ private fun ScoreboardPane(
         TableScoreboard(
             totals = totals,
             lastRound = lastRound,
+            roundsPlayed = roundsPlayed,
             highlightedWinner = highlightedWinner,
             onSeatSelected = onSeatSelected,
             modifier = Modifier.size(side),
@@ -326,6 +556,7 @@ private fun RoundEntryPane(
     modifier: Modifier = Modifier,
 ) {
     val entryScrollState = rememberScrollState()
+    val canRecord = preview is PreviewState.Valid
 
     Box(
         modifier = modifier.testTag("round_entry_pane"),
@@ -336,7 +567,7 @@ private fun RoundEntryPane(
                 .verticalScroll(entryScrollState)
                 .padding(end = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
         ) {
             RoundEntryForm(
                 form = form,
@@ -344,6 +575,7 @@ private fun RoundEntryPane(
                 onWinTypeSelected = onWinTypeSelected,
                 onAmountTextChange = onAmountTextChange,
                 onPayerSelected = onPayerSelected,
+                onAmountDone = { if (canRecord) onRecord() },
                 modifier = Modifier
                     .widthIn(max = 560.dp)
                     .fillMaxWidth(),
@@ -351,13 +583,14 @@ private fun RoundEntryPane(
 
             CalculationSummary(
                 state = preview,
+                amountEntered = form.amountText.isNotBlank(),
                 modifier = Modifier
                     .widthIn(max = 560.dp)
                     .fillMaxWidth(),
             )
 
             RoundActions(
-                canRecord = preview is PreviewState.Valid,
+                canRecord = canRecord,
                 canUndo = canUndo,
                 onRecord = onRecord,
                 onUndo = onUndo,
@@ -429,59 +662,116 @@ private fun RoundActions(
     BoxWithConstraints(modifier = modifier) {
         if (maxWidth < 380.dp) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Button(
-                    onClick = onRecord,
+                RecordButton(
                     enabled = canRecord,
+                    onClick = onRecord,
                     modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(stringResource(R.string.action_commit_round))
-                }
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    OutlinedButton(
-                        onClick = onUndo,
+                    UndoButton(
                         enabled = canUndo,
+                        onClick = onUndo,
                         modifier = Modifier.weight(1f),
-                    ) {
-                        Text(stringResource(R.string.action_undo))
-                    }
-                    OutlinedButton(
+                    )
+                    ResetButton(
                         onClick = onReset,
                         modifier = Modifier.weight(1f),
-                    ) {
-                        Text(stringResource(R.string.action_reset))
-                    }
+                    )
                 }
             }
         } else {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Button(
-                    onClick = onRecord,
+                RecordButton(
                     enabled = canRecord,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(stringResource(R.string.action_commit_round))
-                }
-                OutlinedButton(
-                    onClick = onUndo,
+                    onClick = onRecord,
+                    modifier = Modifier.weight(1.4f),
+                )
+                UndoButton(
                     enabled = canUndo,
+                    onClick = onUndo,
                     modifier = Modifier.weight(1f),
-                ) {
-                    Text(stringResource(R.string.action_undo))
-                }
-                OutlinedButton(
+                )
+                ResetButton(
                     onClick = onReset,
                     modifier = Modifier.weight(1f),
-                ) {
-                    Text(stringResource(R.string.action_reset))
-                }
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun RecordButton(
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier.heightIn(min = 52.dp),
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Check,
+            contentDescription = null,
+            modifier = Modifier.size(ButtonDefaults.IconSize),
+        )
+        Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+        Text(
+            text = stringResource(R.string.action_commit_round),
+            style = MaterialTheme.typography.titleMedium,
+        )
+    }
+}
+
+@Composable
+private fun UndoButton(
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    FilledTonalButton(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier.heightIn(min = 48.dp),
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.Undo,
+            contentDescription = null,
+            modifier = Modifier.size(ButtonDefaults.IconSize),
+        )
+        Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+        Text(stringResource(R.string.action_undo))
+    }
+}
+
+@Composable
+private fun ResetButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 48.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colorScheme.tertiary,
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary.copy(alpha = 0.5f)),
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.RestartAlt,
+            contentDescription = null,
+            modifier = Modifier.size(ButtonDefaults.IconSize),
+        )
+        Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+        Text(stringResource(R.string.action_reset))
     }
 }
 
@@ -532,29 +822,14 @@ private fun RecentRoundsList(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item {
-            Text(
-                text = stringResource(R.string.recent_rounds_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
         if (isEmpty) {
             item {
-                Text(
-                    text = stringResource(R.string.logs_empty),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                EmptyRounds(modifier = Modifier.fillParentMaxSize())
             }
         } else {
             roundsByDate.forEach { (dateLabel, rounds) ->
                 item(key = "date-$dateLabel") {
-                    Text(
-                        text = dateLabel,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    DateHeader(dateLabel)
                 }
                 items(items = rounds) { round ->
                     RecentRoundCard(
@@ -581,23 +856,12 @@ private fun RecentRoundsGrid(
             .padding(contentPadding)
             .testTag("recent_rounds_grid"),
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Text(
-                text = stringResource(R.string.recent_rounds_title),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
         if (isEmpty) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Text(
-                    text = stringResource(R.string.logs_empty),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                EmptyRounds(modifier = Modifier.padding(top = 96.dp))
             }
         } else {
             roundsByDate.forEach { (dateLabel, rounds) ->
@@ -605,11 +869,7 @@ private fun RecentRoundsGrid(
                     key = "date-$dateLabel",
                     span = { GridItemSpan(maxLineSpan) },
                 ) {
-                    Text(
-                        text = dateLabel,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    DateHeader(dateLabel)
                 }
                 gridItems(items = rounds) { round ->
                     RecentRoundCard(
@@ -623,90 +883,128 @@ private fun RecentRoundsGrid(
 }
 
 @Composable
+private fun DateHeader(dateLabel: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = dateLabel,
+            style = MaterialTheme.typography.titleMedium.copy(fontFamily = Bitter),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+    }
+}
+
+@Composable
+private fun EmptyRounds(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Seat.entries.forEach { seat ->
+                MahjongTile(
+                    modifier = Modifier.size(width = 40.dp, height = 52.dp),
+                    depth = 5.dp,
+                    cornerRadius = 7.dp,
+                ) {
+                    TileGlyph(glyph = seat.windGlyph(), fontSize = 24.sp)
+                }
+            }
+        }
+        Spacer(Modifier.height(28.dp))
+        Text(
+            text = stringResource(R.string.logs_empty),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = stringResource(R.string.logs_empty_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.widthIn(max = 280.dp),
+        )
+    }
+}
+
+@Composable
 private fun RecentRoundCard(
     round: CommittedRound,
     modifier: Modifier = Modifier,
 ) {
     val timeFormatter = remember { DateFormat.getTimeInstance(DateFormat.SHORT) }
     val numberFormatter = remember { NumberFormat.getInstance(Locale.getDefault()) }
-    ElevatedCard(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Text(
-                text = timeFormatter.format(Date(round.timestampMillis)),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            val winnerLabel = stringResource(round.input.winner.labelResId())
-            val amountLabel = numberFormatter.format(round.input.amount)
-            val title = when (round.input.winType) {
-                WinType.SELF_DRAW -> stringResource(
-                    R.string.logs_entry_self_draw,
-                    winnerLabel,
-                    amountLabel,
-                )
-                WinType.DISCARD_WIN -> {
-                    val payerLabel = stringResource(
-                        (round.input.payer ?: round.input.winner).labelResId()
-                    )
-                    stringResource(
-                        R.string.logs_entry_discard,
-                        winnerLabel,
-                        payerLabel,
-                        amountLabel,
-                    )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                MahjongTile(
+                    modifier = Modifier.size(width = 34.dp, height = 42.dp),
+                    depth = 4.dp,
+                    cornerRadius = 6.dp,
+                ) {
+                    TileGlyph(glyph = round.input.winner.windGlyph(), fontSize = 20.sp)
                 }
-            }
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Seat.entries.chunked(2).forEach { rowSeats ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        rowSeats.forEach { seat ->
-                            val delta = round.result.deltas[seat] ?: 0
-                            DeltaChip(
-                                seat = seat,
-                                delta = delta,
-                                modifier = Modifier.weight(1f),
+                Column(modifier = Modifier.weight(1f)) {
+                    val winnerLabel = stringResource(round.input.winner.labelResId())
+                    val amountLabel = numberFormatter.format(round.input.amount)
+                    val title = when (round.input.winType) {
+                        WinType.SELF_DRAW -> stringResource(
+                            R.string.logs_entry_self_draw,
+                            winnerLabel,
+                            amountLabel,
+                        )
+                        WinType.DISCARD_WIN -> {
+                            val payerLabel = stringResource(
+                                (round.input.payer ?: round.input.winner).labelResId()
+                            )
+                            stringResource(
+                                R.string.logs_entry_discard,
+                                winnerLabel,
+                                payerLabel,
+                                amountLabel,
                             )
                         }
                     }
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        text = timeFormatter.format(Date(round.timestampMillis)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
+            DeltaStrip(
+                deltas = round.result.deltas,
+                winner = round.input.winner,
+            )
         }
-    }
-}
-
-@Composable
-private fun DeltaChip(
-    seat: Seat,
-    delta: Int,
-    modifier: Modifier = Modifier,
-) {
-    val mahjongColors = MaterialTheme.mahjongColors
-    val formatter = remember { NumberFormat.getInstance(Locale.getDefault()) }
-    val color: Color = when {
-        delta > 0 -> mahjongColors.deltaPositive
-        delta < 0 -> mahjongColors.deltaNegative
-        else -> mahjongColors.deltaNeutral
-    }
-    val sign = if (delta > 0) "+" else ""
-    Box(
-        modifier = modifier
-            .background(color.copy(alpha = 0.15f), shape = RoundedCornerShape(8.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-    ) {
-        Text(
-            text = "${stringResource(seat.labelResId())} $sign${formatter.format(delta)}",
-            style = MaterialTheme.typography.labelLarge,
-            color = color,
-        )
     }
 }

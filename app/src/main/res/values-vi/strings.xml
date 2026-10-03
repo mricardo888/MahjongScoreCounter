@@ -24,6 +24,7 @@
 
     <!-- Actions -->
     <string name="action_commit_round">Ghi</string>
+    <string name="action_new_round">Ghi ván</string>
     <string name="action_undo">Hoàn tác</string>
     <string name="action_reset">Đặt lại</string>
     <string name="action_cancel">Hủy</string>
@@ -36,8 +37,6 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">Chọn người thắng và nhập điểm.</string>
-    <string name="preview_title_self_draw">Tự bốc: mỗi người %1$s</string>
-    <string name="preview_title_discard">Thắng từ bỏ bài: %1$s</string>
     <string name="preview_subtitle">Thay đổi điểm dự kiến</string>
 
     <!-- Validation errors -->
@@ -50,6 +49,7 @@
     <!-- Logs -->
     <string name="logs_empty">Chưa có ván nào.</string>
     <string name="recent_rounds_title">Các ván gần đây</string>
+    <string name="logs_empty_hint">Các ván bạn ghi lại sẽ hiển thị ở đây.</string>
     <string name="logs_entry_self_draw">%1$s tự bốc, mỗi người %2$s</string>
     <string name="logs_entry_discard">%1$s thắng từ %2$s, %3$s</string>
 
@@ -75,4 +75,8 @@
     <string name="reset_dialog_title">Đặt lại ván chơi?</string>
     <string name="reset_dialog_message">Thao tác này sẽ xóa tổng điểm của mọi người chơi và lịch sử các ván. Không thể hoàn tác.</string>
     <string name="reset_dialog_confirm">Đặt lại</string>
+
+    <!-- Table -->
+    <string name="table_tap_hint">Chạm vào một ghế để ghi người đó là người thắng</string>
+    <string name="table_rounds_label">Ván</string>
 </resources>

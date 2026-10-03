@@ -24,6 +24,7 @@
 
     <!-- Actions -->
     <string name="action_commit_round">Itala</string>
+    <string name="action_new_round">Itala ang round</string>
     <string name="action_undo">I-undo</string>
     <string name="action_reset">I-reset</string>
     <string name="action_cancel">Kanselahin</string>
@@ -36,8 +37,6 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">Pumili ng nanalo at ilagay ang puntos.</string>
-    <string name="preview_title_self_draw">Self-draw: %1$s bawat isa</string>
-    <string name="preview_title_discard">Panalo sa tapon: %1$s</string>
     <string name="preview_subtitle">Naka-preview na pagbabago ng puntos</string>
 
     <!-- Validation errors -->
@@ -50,6 +49,7 @@
     <!-- Logs -->
     <string name="logs_empty">Wala pang round.</string>
     <string name="recent_rounds_title">Mga nakaraang round</string>
+    <string name="logs_empty_hint">Lalabas dito ang mga round na itatala mo.</string>
     <string name="logs_entry_self_draw">%1$s self-draw, %2$s bawat isa</string>
     <string name="logs_entry_discard">%1$s panalo mula kay %2$s, %3$s</string>
 
@@ -75,4 +75,8 @@
     <string name="reset_dialog_title">I-reset ang laro?</string>
     <string name="reset_dialog_message">Buburahin nito ang lahat ng kabuuang puntos ng mga manlalaro at history ng round. Hindi na ito maibabalik.</string>
     <string name="reset_dialog_confirm">I-reset</string>
+
+    <!-- Table -->
+    <string name="table_tap_hint">I-tap ang upuan para itala ang player na iyon bilang nanalo</string>
+    <string name="table_rounds_label">Round</string>
 </resources>

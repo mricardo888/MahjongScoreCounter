@@ -24,6 +24,7 @@
 
     <!-- Actions -->
     <string name="action_commit_round">記錄</string>
+    <string name="action_new_round">記錄一局</string>
     <string name="action_undo">還原</string>
     <string name="action_reset">重設</string>
     <string name="action_cancel">取消</string>
@@ -36,8 +37,6 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">選擇贏家並輸入點數。</string>
-    <string name="preview_title_self_draw">自摸：每位 %1$s</string>
-    <string name="preview_title_discard">吃牌胡：%1$s</string>
     <string name="preview_subtitle">預計分數變化</string>
 
     <!-- Validation errors -->
@@ -50,6 +49,7 @@
     <!-- Logs -->
     <string name="logs_empty">尚無對局紀錄。</string>
     <string name="recent_rounds_title">最近記錄</string>
+    <string name="logs_empty_hint">記錄的對局會顯示在這裡。</string>
     <string name="logs_entry_self_draw">%1$s 自摸，每位 %2$s</string>
     <string name="logs_entry_discard">%1$s 胡 %2$s，%3$s</string>
 
@@ -75,4 +75,8 @@
     <string name="reset_dialog_title">重設對局？</string>
     <string name="reset_dialog_message">將會清除所有玩家分數及對局紀錄，此操作無法還原。</string>
     <string name="reset_dialog_confirm">重設</string>
+
+    <!-- Table -->
+    <string name="table_tap_hint">點一下座位即可將該玩家記為贏家</string>
+    <string name="table_rounds_label">局</string>
 </resources>

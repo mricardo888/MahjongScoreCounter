@@ -24,6 +24,7 @@
 
     <!-- Actions -->
     <string name="action_commit_round">기록</string>
+    <string name="action_new_round">국 기록</string>
     <string name="action_undo">실행 취소</string>
     <string name="action_reset">초기화</string>
     <string name="action_cancel">취소</string>
@@ -36,8 +37,6 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">승자를 선택하고 점수를 입력하세요.</string>
-    <string name="preview_title_self_draw">자기 뽑기: 각 %1$s</string>
-    <string name="preview_title_discard">버림패 승리: %1$s</string>
     <string name="preview_subtitle">예상 점수 변화</string>
 
     <!-- Validation errors -->
@@ -50,6 +49,7 @@
     <!-- Logs -->
     <string name="logs_empty">아직 기록된 국이 없습니다.</string>
     <string name="recent_rounds_title">최근 국</string>
+    <string name="logs_empty_hint">기록한 국이 여기에 표시됩니다.</string>
     <string name="logs_entry_self_draw">%1$s 자기 뽑기, 각 %2$s</string>
     <string name="logs_entry_discard">%1$s 승리, %2$s 지불 %3$s</string>
 
@@ -75,4 +75,8 @@
     <string name="reset_dialog_title">게임을 초기화할까요?</string>
     <string name="reset_dialog_message">모든 플레이어 점수와 국 기록이 삭제됩니다. 이 작업은 되돌릴 수 없습니다.</string>
     <string name="reset_dialog_confirm">초기화</string>
+
+    <!-- Table -->
+    <string name="table_tap_hint">좌석을 탭해 해당 플레이어를 승자로 기록하세요</string>
+    <string name="table_rounds_label">국</string>
 </resources>

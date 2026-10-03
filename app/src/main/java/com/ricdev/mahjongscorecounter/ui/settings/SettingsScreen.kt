@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -35,9 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ricdev.mahjongscorecounter.ui.theme.Bitter
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ricdev.mahjongscorecounter.BuildConfig
 import com.ricdev.mahjongscorecounter.R
@@ -218,7 +224,7 @@ private fun AppearanceSettingsCard(
     onThemeModeSelected: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ElevatedCard(modifier = modifier) {
+    SettingsCard(modifier = modifier) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -261,7 +267,7 @@ private fun LanguageSettingsCard(
     onLocaleSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ElevatedCard(modifier = modifier) {
+    SettingsCard(modifier = modifier) {
         var expanded by remember { mutableStateOf(false) }
         val selectedOption = languageOptions.firstOrNull { it.tag == currentTag }
             ?: languageOptions.first()
@@ -308,7 +314,7 @@ private fun AboutSettingsCard(
     versionName: String,
     modifier: Modifier = Modifier,
 ) {
-    ElevatedCard(modifier = modifier) {
+    SettingsCard(modifier = modifier) {
         ListItem(
             leadingContent = {
                 AndroidView(
@@ -320,6 +326,7 @@ private fun AboutSettingsCard(
                     modifier = Modifier.size(48.dp),
                 )
             },
+            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
             headlineContent = {
                 Text(
                     text = stringResource(R.string.app_name),
@@ -340,8 +347,24 @@ private fun AboutSettingsCard(
 private fun SectionHeader(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(horizontal = 4.dp),
+        style = MaterialTheme.typography.titleMedium.copy(fontFamily = Bitter),
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(start = 4.dp, top = 8.dp),
+    )
+}
+
+@Composable
+private fun SettingsCard(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Card(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        content = content,
     )
 }

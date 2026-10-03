@@ -9,6 +9,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -93,8 +96,9 @@ class MainScreenUiTest {
         composeRule
             .onNodeWithText(context.getString(R.string.action_reset))
             .performClick()
+        // The dialog's confirm button shares its label with the Reset action behind it.
         composeRule
-            .onNodeWithText(context.getString(R.string.reset_dialog_confirm))
+            .onNode(hasText(context.getString(R.string.reset_dialog_confirm)) and hasAnyAncestor(isDialog()))
             .performClick()
         composeRule.waitForIdle()
         composeRule

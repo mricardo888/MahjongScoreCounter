@@ -1,32 +1,46 @@
 package com.ricdev.mahjongscorecounter.ui.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.semantics.Role
 import com.ricdev.mahjongscorecounter.R
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.ui.theme.MahjongScoreCounterTheme
+import com.ricdev.mahjongscorecounter.ui.theme.ScoreNumerals
 import com.ricdev.mahjongscorecounter.ui.theme.mahjongColors
 import java.text.NumberFormat
 import java.util.Locale
 
+/**
+ * A seat on the table, drawn as a wind tile. Type is sized from [tileWidth] rather than the user's
+ * font scale: the table is a fixed-proportion board that already scales with the window.
+ */
 @Composable
 fun SeatCard(
     seat: Seat,
@@ -34,6 +48,7 @@ fun SeatCard(
     lastDelta: Int?,
     highlighted: Boolean,
     modifier: Modifier = Modifier,
+    tileWidth: Dp = 112.dp,
     onClick: (() -> Unit)? = null,
 ) {
     val formatter = remember { NumberFormat.getInstance(Locale.getDefault()) }
@@ -55,13 +70,21 @@ fun SeatCard(
         ""
     }
     val clickLabel = stringResource(R.string.accessibility_select_winner, seatLabel)
-    val border = if (highlighted) {
-        BorderStroke(3.dp, MaterialTheme.colorScheme.primary)
-    } else {
-        BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-    }
-    Surface(
-        modifier = modifier
+
+    val density = LocalDensity.current
+    fun Dp.asSp() = with(density) { toSp() }
+    val glyphSize = (tileWidth * 0.2f).asSp()
+    val nameSize = (tileWidth * 0.105f).asSp()
+    val scoreMax = (tileWidth * 0.25f).asSp()
+    val scoreMin = (tileWidth * 0.12f).asSp()
+    val deltaSize = (tileWidth * 0.115f).asSp()
+
+    MahjongTile(
+        modifier = modifier,
+        depth = (tileWidth * 0.055f).coerceIn(4.dp, 9.dp),
+        cornerRadius = (tileWidth * 0.1f).coerceIn(8.dp, 16.dp),
+        lifted = highlighted,
+        faceModifier = Modifier
             .semantics(mergeDescendants = true) {
                 contentDescription = scoreDescription + selectedDescription
             }
@@ -76,52 +99,65 @@ fun SeatCard(
                     Modifier
                 }
             ),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = if (highlighted) 6.dp else 2.dp,
-        shadowElevation = if (highlighted) 4.dp else 1.dp,
-        border = border,
+        contentPadding = PaddingValues(
+            horizontal = tileWidth * 0.08f,
+            vertical = tileWidth * 0.06f,
+        ),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
-                text = seatLabel,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(tileWidth * 0.05f),
+            ) {
+                TileGlyph(glyph = seat.windGlyph(), fontSize = glyphSize)
+                if (!seat.isNamedByGlyph(seatLabel)) {
+                    Text(
+                        text = seatLabel,
+                        color = mahjongColors.tileInk.copy(alpha = 0.7f),
+                        fontSize = nameSize,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+            BasicText(
+                text = formatter.formatScore(total),
+                modifier = Modifier.fillMaxWidth(),
+                style = ScoreNumerals.copy(
+                    color = mahjongColors.tileInk,
+                    textAlign = TextAlign.Center,
+                ),
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = scoreMin,
+                    maxFontSize = scoreMax,
+                ),
             )
-            Text(
-                text = totalLabel,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Black,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            if (lastDelta != null && lastDelta != 0) {
-                val deltaColor: Color = when {
-                    lastDelta > 0 -> mahjongColors.deltaPositive
-                    lastDelta < 0 -> mahjongColors.deltaNegative
-                    else -> mahjongColors.deltaNeutral
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                val deltaColor = when {
+                    lastDelta == null || lastDelta == 0 -> mahjongColors.tileInk
+                    lastDelta > 0 -> mahjongColors.tileDeltaPositive
+                    else -> mahjongColors.tileDeltaNegative
                 }
                 Text(
-                    text = lastDeltaLabel.orEmpty(),
-                    style = MaterialTheme.typography.labelLarge,
+                    // Always laid out so every tile keeps the same rhythm, scored or not.
+                    text = lastDelta?.takeIf { it != 0 }?.let { formatter.formatDelta(it) } ?: " ",
                     color = deltaColor,
+                    style = ScoreNumerals.copy(fontWeight = FontWeight.SemiBold),
+                    fontSize = deltaSize,
+                    maxLines = 1,
                 )
             }
         }
     }
 }
 
-private fun Seat.labelResId(): Int = when (this) {
-    Seat.EAST -> R.string.seat_east
-    Seat.SOUTH -> R.string.seat_south
-    Seat.WEST -> R.string.seat_west
-    Seat.NORTH -> R.string.seat_north
-}
-
-@Preview(showBackground = true, widthDp = 140)
+@Preview(showBackground = true, backgroundColor = 0xFF145C42)
 @Composable
 private fun SeatCardHighlightedPreview() {
     MahjongScoreCounterTheme {
@@ -130,11 +166,14 @@ private fun SeatCardHighlightedPreview() {
             total = 768,
             lastDelta = 256,
             highlighted = true,
+            modifier = Modifier
+                .padding(16.dp)
+                .size(width = 112.dp, height = 100.dp),
         )
     }
 }
 
-@Preview(showBackground = true, widthDp = 140)
+@Preview(showBackground = true, backgroundColor = 0xFF145C42)
 @Composable
 private fun SeatCardIdlePreview() {
     MahjongScoreCounterTheme {
@@ -143,6 +182,9 @@ private fun SeatCardIdlePreview() {
             total = -256,
             lastDelta = -256,
             highlighted = false,
+            modifier = Modifier
+                .padding(16.dp)
+                .size(width = 112.dp, height = 100.dp),
         )
     }
 }

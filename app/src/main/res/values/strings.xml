@@ -24,6 +24,7 @@
 
     <!-- Actions -->
     <string name="action_commit_round">Record</string>
+    <string name="action_new_round">Record round</string>
     <string name="action_undo">Undo</string>
     <string name="action_reset">Reset</string>
     <string name="action_cancel">Cancel</string>
@@ -36,8 +37,6 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">Choose a winner and enter points.</string>
-    <string name="preview_title_self_draw">Self-draw: %1$s each</string>
-    <string name="preview_title_discard">Discard win: %1$s</string>
     <string name="preview_subtitle">Pending point changes</string>
 
     <!-- Validation errors -->
@@ -50,6 +49,7 @@
     <!-- Logs -->
     <string name="logs_empty">No rounds yet.</string>
     <string name="recent_rounds_title">Recent rounds</string>
+    <string name="logs_empty_hint">Rounds you record will appear here.</string>
     <string name="logs_entry_self_draw">%1$s self-draws, %2$s each</string>
     <string name="logs_entry_discard">%1$s wins from %2$s, %3$s</string>
 
@@ -83,4 +83,8 @@
     <string name="reset_dialog_title">Reset game?</string>
     <string name="reset_dialog_message">This will clear all player totals and round history. This cannot be undone.</string>
     <string name="reset_dialog_confirm">Reset</string>
+
+    <!-- Table -->
+    <string name="table_tap_hint">Tap a seat to record that player\'s win</string>
+    <string name="table_rounds_label">Rounds</string>
 </resources>

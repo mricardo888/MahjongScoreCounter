@@ -24,6 +24,7 @@
 
     <!-- Actions -->
     <string name="action_commit_round">記録</string>
+    <string name="action_new_round">局を記録</string>
     <string name="action_undo">元に戻す</string>
     <string name="action_reset">リセット</string>
     <string name="action_cancel">キャンセル</string>
@@ -36,8 +37,6 @@
 
     <!-- Preview / summary -->
     <string name="preview_empty">勝者を選択し、点数を入力してください。</string>
-    <string name="preview_title_self_draw">自摸: 各 %1$s</string>
-    <string name="preview_title_discard">捨て牌勝ち: %1$s</string>
     <string name="preview_subtitle">予定される点数変化</string>
 
     <!-- Validation errors -->
@@ -50,6 +49,7 @@
     <!-- Logs -->
     <string name="logs_empty">まだ記録された局はありません。</string>
     <string name="recent_rounds_title">最近の局</string>
+    <string name="logs_empty_hint">記録した局がここに表示されます。</string>
     <string name="logs_entry_self_draw">%1$s 自摸、各 %2$s</string>
     <string name="logs_entry_discard">%1$s 勝ち、%2$s が %3$s 支払い</string>
 
@@ -75,4 +75,8 @@
     <string name="reset_dialog_title">ゲームをリセットしますか？</string>
     <string name="reset_dialog_message">全プレイヤーの合計点と局履歴が消去されます。この操作は元に戻せません。</string>
     <string name="reset_dialog_confirm">リセット</string>
+
+    <!-- Table -->
+    <string name="table_tap_hint">席をタップして、そのプレイヤーを勝者として記録</string>
+    <string name="table_rounds_label">局</string>
 </resources>

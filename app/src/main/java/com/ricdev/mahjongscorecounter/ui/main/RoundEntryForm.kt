@@ -4,22 +4,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ricdev.mahjongscorecounter.R
 import com.ricdev.mahjongscorecounter.model.Seat
 import com.ricdev.mahjongscorecounter.model.WinType
+import com.ricdev.mahjongscorecounter.ui.components.SeatTileSelector
 import com.ricdev.mahjongscorecounter.ui.components.SegmentedButtonRow
 import com.ricdev.mahjongscorecounter.ui.theme.MahjongScoreCounterTheme
+import com.ricdev.mahjongscorecounter.ui.theme.ScoreNumerals
 import com.ricdev.mahjongscorecounter.viewmodel.FormState
 
 @Composable
@@ -30,36 +39,49 @@ fun RoundEntryForm(
     onAmountTextChange: (String) -> Unit,
     onPayerSelected: (Seat?) -> Unit,
     modifier: Modifier = Modifier,
+    amountFocusRequester: FocusRequester? = null,
+    onAmountDone: (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        FieldLabel(text = stringResource(R.string.label_round_winner))
-        SegmentedButtonRow(
-            options = Seat.entries,
-            selected = form.winner,
-            onSelectedChange = onWinnerSelected,
-            label = { seat -> stringResource(seat.shortLabelResId()) },
-            semanticLabel = { seat -> stringResource(seat.labelResId()) },
-            modifier = Modifier.fillMaxWidth(),
-        )
+        FormField(label = stringResource(R.string.label_round_winner)) {
+            SeatTileSelector(
+                seats = Seat.entries,
+                selected = form.winner,
+                onSelectedChange = onWinnerSelected,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
 
-        FieldLabel(text = stringResource(R.string.label_win_type))
-        SegmentedButtonRow(
-            options = WinType.entries,
-            selected = form.winType,
-            onSelectedChange = onWinTypeSelected,
-            label = { type ->
-                stringResource(
-                    when (type) {
-                        WinType.SELF_DRAW -> R.string.win_type_self_draw
-                        WinType.DISCARD_WIN -> R.string.win_type_discard
-                    }
+        FormField(label = stringResource(R.string.label_win_type)) {
+            SegmentedButtonRow(
+                options = WinType.entries,
+                selected = form.winType,
+                onSelectedChange = onWinTypeSelected,
+                label = { type ->
+                    stringResource(
+                        when (type) {
+                            WinType.SELF_DRAW -> R.string.win_type_self_draw
+                            WinType.DISCARD_WIN -> R.string.win_type_discard
+                        }
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        if (form.winType == WinType.DISCARD_WIN && form.winner != null) {
+            FormField(label = stringResource(R.string.label_payer)) {
+                SeatTileSelector(
+                    seats = Seat.entries.filter { it != form.winner },
+                    selected = form.payer,
+                    onSelectedChange = onPayerSelected,
+                    modifier = Modifier.fillMaxWidth(),
                 )
-            },
-            modifier = Modifier.fillMaxWidth(),
-        )
+            }
+        }
 
         AmountField(
             amountText = form.amountText,
@@ -68,20 +90,20 @@ fun RoundEntryForm(
                 WinType.DISCARD_WIN -> R.string.label_amount_discard
             },
             onAmountTextChange = onAmountTextChange,
+            focusRequester = amountFocusRequester,
+            onDone = onAmountDone,
         )
+    }
+}
 
-        if (form.winType == WinType.DISCARD_WIN && form.winner != null) {
-            FieldLabel(text = stringResource(R.string.label_payer))
-            val payerOptions = Seat.entries.filter { it != form.winner }
-            SegmentedButtonRow(
-                options = payerOptions,
-                selected = form.payer,
-                onSelectedChange = onPayerSelected,
-                label = { seat -> stringResource(seat.shortLabelResId()) },
-                semanticLabel = { seat -> stringResource(seat.labelResId()) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
+@Composable
+private fun FormField(
+    label: String,
+    content: @Composable () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        FieldLabel(text = label)
+        content()
     }
 }
 
@@ -90,6 +112,8 @@ private fun AmountField(
     amountText: String,
     labelResId: Int,
     onAmountTextChange: (String) -> Unit,
+    focusRequester: FocusRequester?,
+    onDone: (() -> Unit)?,
 ) {
     OutlinedTextField(
         value = amountText,
@@ -97,10 +121,21 @@ private fun AmountField(
             onAmountTextChange(raw)
         },
         label = { Text(stringResource(labelResId)) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        textStyle = ScoreNumerals.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = if (onDone != null) ImeAction.Done else ImeAction.Default,
+        ),
+        keyboardActions = KeyboardActions(onDone = { onDone?.invoke() }),
         singleLine = true,
+        shape = MaterialTheme.shapes.small,
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
         modifier = Modifier
             .fillMaxWidth()
+            .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
             .testTag("round_amount"),
     )
 }
@@ -109,19 +144,12 @@ private fun AmountField(
 internal fun FieldLabel(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.titleSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
-internal fun Seat.shortLabelResId(): Int = when (this) {
-    Seat.EAST -> R.string.seat_east_short
-    Seat.SOUTH -> R.string.seat_south_short
-    Seat.WEST -> R.string.seat_west_short
-    Seat.NORTH -> R.string.seat_north_short
-}
-
-@Preview(showBackground = true, widthDp = 360)
+@Preview(showBackground = true, widthDp = 360, backgroundColor = 0xFFEEF2EC)
 @Composable
 private fun RoundEntryFormPreview() {
     MahjongScoreCounterTheme {
